@@ -7,10 +7,9 @@ const Navbar = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Проверка аутентификации пользователя через API
         const checkAuthStatus = async () => {
             try {
-                await axios.get('https://localhost:7049/api/Auth/check', { withCredentials: true });
+                await axios.get('https://localhost:5260/api/Auth/check', { withCredentials: true });
                 setIsAuthenticated(true);
             } catch (error) {
                 setIsAuthenticated(false);
@@ -22,7 +21,7 @@ const Navbar = () => {
     const handleLogout = async () => {
         try {
             // Выход из аккаунта
-            await axios.post('https://localhost:7049/api/Auth/logout', {}, { withCredentials: true });
+            await axios.post('https://localhost:5260/api/Auth/logout', {}, { withCredentials: true });
             setIsAuthenticated(false);
             navigate('/auth'); 
         } catch (error) {

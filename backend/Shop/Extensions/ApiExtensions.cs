@@ -29,11 +29,18 @@ namespace Shop.Extensions
                     {
                         OnMessageReceived = context =>
                         {
-                            context.Token = context.Request.Cookies["ck"] ;
+                            context.Token = context.Request.Cookies["ck"];
                             return Task.CompletedTask;
                         }
                     };
                 });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always; 
+                options.Cookie.SameSite = SameSiteMode.None; 
+            });
+
             services.AddAuthorization();
         }
         

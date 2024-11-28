@@ -15,7 +15,7 @@ const AuthPage = () => {
 
     try {
       const response = await axios.post(
-        'https://localhost:7049/api/Auth',
+        'https://localhost:5260/api/Auth',
         { email, password },
         { withCredentials: true } // Указываем, что работаем с куками
       );

@@ -39,8 +39,8 @@ namespace Shop.Controllers
         [HttpGet("check")]
         public IActionResult Check()
         {
-            var token = Request.Cookies["test-cookie"];
-            Console.WriteLine("Полученный токен: " + token);
+           
+            var token = Request.Cookies["ck"];
 
             if (string.IsNullOrEmpty(token))
             {
@@ -54,6 +54,7 @@ namespace Shop.Controllers
         public IActionResult Logout()
         {
             HttpContext.Response.Cookies.Delete("test-cookie");
+            HttpContext.Response.Cookies.Delete("ck");
 
             return Ok();
         }
