@@ -39,9 +39,9 @@ namespace Shop.Service
            await _productRepository.DeleteAsync(id);
         }
 
-        public async Task<IEnumerable<ProductResponceDTO>> GetAllAsync(string search, int paginateSize, int page)
+        public async Task<IEnumerable<ProductResponceDTO>> GetAllAsync(string search, int paginateSize, int page, string sortOrder)
         {
-            var products = await ((ProductRepository)_productRepository).GetAllPaginateAsync(search, paginateSize, page);
+            var products = await ((ProductRepository)_productRepository).GetAllPaginateAsync(search, paginateSize, page, sortOrder);
             return ConvertProductToProductResponceDTO(products);
 
         }

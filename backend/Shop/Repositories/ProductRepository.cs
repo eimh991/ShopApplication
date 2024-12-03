@@ -85,15 +85,24 @@ namespace Shop.Repositories
             }
   
         }
-        public async Task<IEnumerable<Product>> GetAllPaginateAsync(string search, int paginateSize, int page)
+        public async Task<IEnumerable<Product>> GetAllPaginateAsync(string search, int paginateSize, int page, string sortOrder)
         {
-            return await _context.Products
+            var query = _context.Products
                             .AsNoTracking()
                             .Where(p => !string.IsNullOrWhiteSpace(search) ||
                             p.Name.ToLower().Contains(search.ToLower()))
-                            .Skip(paginateSize * (page-1))
-                            .Take(paginateSize)
-                            .ToListAsync();
+                            .Skip(paginateSize * (page - 1))
+                            .Take(paginateSize);
+            //.ToListAsync();
+            if (sortOrder == "desc")
+            {
+                query = query.OrderByDescending(p => p.Price);
+            }
+            else
+            {
+                query = query.OrderBy(p => p.Price);
+            }
+            return await query.ToListAsync();
         }
 
         public async Task<IEnumerable<Product>> GetLastProductsAsync()
