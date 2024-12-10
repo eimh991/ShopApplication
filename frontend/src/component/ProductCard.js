@@ -5,7 +5,8 @@ const ProductCard = ({ product }) => {
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    navigate(`/product/${product.id}`); // Переход на страницу деталей продукта
+    console.log(`Navigating to product with ID: ${product.id}`);
+    navigate(`/product/${product.id}`); 
   };
 
   return (
