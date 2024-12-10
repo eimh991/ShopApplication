@@ -1,26 +1,28 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ProductCard = ({ product }) => {
-    return (
-        <div className="card h-100">
-            <img
-                src={product.imagePath}
-                className="card-img-top"
-                alt={product.name}
-                style={{ height: '200px', objectFit: 'cover' }}
-            />
-            <div className="card-body">
-                <h5 className="card-title">{product.name}</h5>
-                <p className="card-text">{product.description}</p>
-                <p className="card-text">
-                    <strong>Цена:</strong> {product.price} ₽
-                </p>
-                <p className="card-text">
-                    <strong>В наличии:</strong> {product.stock} шт.
-                </p>
-            </div>
-        </div>
-    );
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate(`/product/${product.id}`); // Переход на страницу деталей продукта
+  };
+
+  return (
+    <div
+      onClick={handleCardClick}
+      style={{
+        border: '1px solid #ccc',
+        padding: '16px',
+        cursor: 'pointer',
+        backgroundColor: '#f9f9f9',
+      }}
+    >
+      <h3>{product.title}</h3>
+      <p>{product.description}</p>
+      <p>Цена: {product.price} ₽</p>
+    </div>
+  );
 };
 
 export default ProductCard;
