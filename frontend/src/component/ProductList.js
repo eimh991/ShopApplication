@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+
 const ProductList = () => {
     const [products, setProducts] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         axios.get('https://localhost:5260/api/Product/last') 
@@ -20,7 +23,14 @@ const ProductList = () => {
             <h2 className="text-center mb-4">Последние товары</h2>
             <div className="row">
                 {products.map((product) => (
-                    <div key={product.productId} className="col-md-4">
+                    <div 
+                    key={product.productId} 
+                    className="col-md-4"
+                    onClick={() => 
+                        {   console.log("Card clicked:", product.productId)
+                            navigate(`/product/${product.productId}`)}}
+                    style={{ cursor: 'pointer' }}
+                    >
                         <div className="card h-100">
                             <img
                                 src={product.imagePath}

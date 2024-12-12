@@ -17,7 +17,7 @@ const MainPage = () => {
       <h1>Последние товары</h1>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard key={product.productId} product={product} />
         ))}
       </div>
     </div>

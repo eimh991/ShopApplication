@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter , Route, Routes } from 'react-router-dom';
 import Navbar from './Navbar';
 import HomePage from './HomePage';
 import AuthPage from './component/AuthPage';
@@ -10,7 +10,7 @@ import MainPage from './component/MainPage';
 
 const App = () => {
   return (
-      <Router>
+      <BrowserRouter>
           <Navbar />
           <Routes>
               <Route path="/" element={<HomePage />} />
@@ -22,7 +22,7 @@ const App = () => {
               <Route path="/product/:id" element={<ProductDetails />} />
           </Routes>
           <Footer />
-      </Router>
+      </BrowserRouter>
   );
 };
 
