@@ -26,10 +26,6 @@ const ProductList = () => {
                     <div 
                     key={product.productId} 
                     className="col-md-4"
-                    onClick={() => 
-                        {   console.log("Card clicked:", product.productId)
-                            navigate(`/product/${product.productId}`)}}
-                    style={{ cursor: 'pointer' }}
                     >
                         <div className="card h-100">
                             <img
@@ -38,6 +34,10 @@ const ProductList = () => {
                                 alt={product.name}
                                 style={{ height: '200px', objectFit: 'cover' }}
                             />
+                            onClick={() => 
+                                { console.log("Card clicked:", product.productId);
+                                navigate(`/product/${product.productId}`);}}
+                                style={{ cursor: 'pointer' }}
                             <div className="card-body">
                                 <h5 className="card-title">{product.name}</h5>
                                 <p className="card-text">{product.description}</p>

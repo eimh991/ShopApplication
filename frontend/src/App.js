@@ -7,6 +7,7 @@ import Footer from './Footer';
 import RegistrationPage from './component/RegistrationPage';
 import ProductDetails from './component/ProductDetails';
 import MainPage from './component/MainPage';
+import ProductCard from './component/ProductCard';
 
 const App = () => {
   return (
@@ -19,7 +20,7 @@ const App = () => {
               <Route path="/cart" element={<div>Корзина</div>} />
               <Route path="/search" element={<div>Поиск</div>} />
               <Route path="/" element={<MainPage />} />
-              <Route path="/product/:id" element={<ProductDetails />} />
+              <Route path="/product/:productId" element={<ProductCard />} />
           </Routes>
           <Footer />
       </BrowserRouter>
