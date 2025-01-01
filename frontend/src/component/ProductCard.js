@@ -19,7 +19,7 @@ const ProductCard = ({ product }) => {
         backgroundColor: '#f9f9f9',
       }}
     >
-      <h3>{product.title}</h3>
+      <h3>{product.name}</h3>
       <p>{product.description}</p>
       <p>Цена: {product.price} ₽</p>
     </div>
