@@ -89,7 +89,7 @@ namespace Shop.Repositories
         {
             var query = _context.Products
                             .AsNoTracking()
-                            .Where(p => !string.IsNullOrWhiteSpace(search) ||
+                            .Where(p => string.IsNullOrWhiteSpace(search) ||
                             p.Name.ToLower().Contains(search.ToLower()))
                             .Skip(paginateSize * (page - 1))
                             .Take(paginateSize);
