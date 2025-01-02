@@ -49,6 +49,9 @@ const Navbar = () => {
                         <Link className="nav-link" to="/">Главная</Link>
                     </li>
                     <li className="nav-item">
+                         <Link className="nav-link" to="/products">Все товары</Link>
+                    </li>
+                    <li className="nav-item">
                         <Link className="nav-link" to="/cart">Корзина</Link>
                     </li>
                     {isAuthenticated ? (

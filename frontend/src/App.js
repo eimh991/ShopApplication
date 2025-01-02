@@ -8,6 +8,7 @@ import RegistrationPage from './component/RegistrationPage';
 import ProductDetails from './component/ProductDetails';
 import MainPage from './component/MainPage';
 import ProductCard from './component/ProductCard';
+import AllProductsPage from './component/AllProductsPage';
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
               <Route path="/search" element={<div>Поиск</div>} />
               <Route path="/" element={<MainPage />} />
               <Route path="/product/:id" element={<ProductDetails/>} />
+              <Route path="/products" element={<AllProductsPage />} />
           </Routes>
           <Footer />
       </BrowserRouter>
