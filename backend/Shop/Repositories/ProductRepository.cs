@@ -90,10 +90,10 @@ namespace Shop.Repositories
             var query = _context.Products
                             .AsNoTracking()
                             .Where(p => string.IsNullOrWhiteSpace(search) ||
-                            p.Name.ToLower().Contains(search.ToLower()))
-                            .Skip(paginateSize * (page - 1))
-                            .Take(paginateSize);
-            //.ToListAsync();
+                            p.Name.ToLower().Contains(search.ToLower()));
+                            //.Skip(paginateSize * (page - 1))
+                            //.Take(paginateSize);
+
             if (sortOrder == "desc")
             {
                 query = query.OrderByDescending(p => p.Price);
@@ -102,7 +102,10 @@ namespace Shop.Repositories
             {
                 query = query.OrderBy(p => p.Price);
             }
-            return await query.ToListAsync();
+            return await query
+                .Skip(paginateSize * (page - 1))
+                .Take(paginateSize)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Product>> GetLastProductsAsync()
