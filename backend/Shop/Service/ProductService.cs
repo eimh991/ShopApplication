@@ -14,10 +14,11 @@ namespace Shop.Service
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
         }
-        public async Task CreateAsync(ProductDTO entity)
+        public async Task CreateAsync(ProductRequestDTO entity)
         {
             var category =  await ((CategoryRepository)_categoryRepository).FindByCategoryTitlleAsync(entity.CategoryTitle);
 
+            string imagePaath = GenerateImagePath(entity.Image).Result;
 
             Product product = new Product
             {
@@ -25,7 +26,7 @@ namespace Shop.Service
                 Name = entity.Name,
                 Price = entity.Price,
                 Description = entity.Description,
-                ImagePath = сheckingProductPictures(entity.ImagePath),
+                ImagePath = сheckingProductPictures(imagePaath),
                 Stock = entity.Stock,
                 CategoryId = category.CategoryId,
             };
@@ -53,23 +54,24 @@ namespace Shop.Service
             return responceProduct;
         }
 
-        public async Task UpdateAsync(ProductDTO entity)
+        public async Task UpdateAsync(ProductRequestDTO entity)
         {
             var category = await ((CategoryRepository)_categoryRepository).FindByCategoryTitlleAsync(entity.CategoryTitle);
+            string imagePaath = GenerateImagePath(entity.Image).Result;
             Product product = new Product
             {
                 ProductId = entity.ProductId,
                 Name = entity.Name,
                 Price = entity.Price,
                 Description = entity.Description,
-                ImagePath = сheckingProductPictures(entity.ImagePath),
+                ImagePath = сheckingProductPictures(imagePaath),
                 Stock = entity.Stock,
                 CategoryId = category.CategoryId,
             };
             await _productRepository.UpdateAsync(product);
         }
 
-        public async Task ChangePriceAsync(ProductDTO entity)
+        public async Task ChangePriceAsync(ProductRequestDTO entity)
         {
             if(entity.Price > 0m)
             {
@@ -83,7 +85,7 @@ namespace Shop.Service
             
         }
 
-        public async Task ChangeQuantityProductAsync(ProductDTO entity)
+        public async Task ChangeQuantityProductAsync(ProductRequestDTO entity)
         {
             if (entity.Stock > 0m)
             {
@@ -126,6 +128,31 @@ namespace Shop.Service
                 Stock = p.Stock,
                 CategoryId = p.CategoryId,
             }).ToList();
+        }
+
+        private async Task<string> GenerateImagePath (IFormFile file)
+        {
+            var uploadFolderPath = Path.Combine(Directory.GetCurrentDirectory(),
+                "wwwroot", "images");
+            if (!Directory.Exists(uploadFolderPath))
+            {
+                Directory.CreateDirectory(uploadFolderPath);
+            }
+            var guid = Guid.NewGuid();
+            if (file.Length > 0)
+            {
+                var fp = file.FileName.Split('.');
+                var imageFileName = guid.ToString() + "." + fp[fp.Length - 1];
+                var filePath = Path.Combine(uploadFolderPath, imageFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(fileStream);
+                }
+
+                return filePath;
+            }
+            return string.Empty;
         }
     }
 }

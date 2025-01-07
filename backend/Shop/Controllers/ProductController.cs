@@ -17,7 +17,7 @@ namespace Shop.Controllers
             _productService = productService;
         }
         [HttpPost]
-        public async Task<IActionResult> CreateProductAsync([FromBody]ProductDTO productDTO)
+        public async Task<IActionResult> CreateProductAsync([FromForm]ProductRequestDTO productDTO)
         {
             await _productService.CreateAsync(productDTO);
 
@@ -56,7 +56,7 @@ namespace Shop.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> ChangeProductAsync(ProductDTO productDTO)
+        public async Task<IActionResult> ChangeProductAsync(ProductRequestDTO productDTO)
         {
             await _productService.UpdateAsync(productDTO);
 
@@ -64,7 +64,7 @@ namespace Shop.Controllers
         }
 
         [HttpPut("price")]
-        public async Task<IActionResult> ChangePriceProduct(ProductDTO productDTO)
+        public async Task<IActionResult> ChangePriceProduct([FromForm]ProductRequestDTO productDTO)
         {
             await ((ProductService)_productService).ChangePriceAsync(productDTO);
 

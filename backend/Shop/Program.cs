@@ -77,12 +77,14 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-app.UseDefaultFiles();
+
 app.UseStaticFiles();
+app.UseDefaultFiles();
+
+
 
 app.UseAuthentication();
 app.UseAuthorization();
-
 
 
 app.UseCors("AllowMyOrigin");
@@ -92,10 +94,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseHttpsRedirection();
 
 app.MapControllers();
 
+
 app.MapFallbackToFile("index.html");
 
+
+
 app.Run();
+
+
