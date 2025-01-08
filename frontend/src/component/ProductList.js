@@ -32,7 +32,7 @@ const ProductList = () => {
                     >
                         <div className="card h-100">
                             <img
-                                src={product.imagePath}
+                                src={`https://localhost:5260/images/${product.imagePath}`}
                                 className="card-img-top"
                                 alt={product.name}
                                 style={{ height: '200px', objectFit: 'cover' }}

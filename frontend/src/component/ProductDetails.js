@@ -21,7 +21,7 @@ const ProductDetails = () => {
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <div>
         <img 
-          src={product.imagePath} 
+          src={`https://localhost:5260/images/${product.imagePath}`} 
           alt={product.name} 
           style={{ maxWidth: '600px', maxHeight: '800px', objectFit: 'contain' }}
         />

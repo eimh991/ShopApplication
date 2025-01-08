@@ -110,7 +110,7 @@ namespace Shop.Service
         {
             if (pathImage == string.Empty  || string.IsNullOrWhiteSpace(pathImage))
             {
-                pathImage = "/images/default.jpg";
+                pathImage = "default.jpg";
             }
             return pathImage;
         }
@@ -150,7 +150,7 @@ namespace Shop.Service
                     await file.CopyToAsync(fileStream);
                 }
 
-                return filePath;
+                return imageFileName;
             }
             return string.Empty;
         }
