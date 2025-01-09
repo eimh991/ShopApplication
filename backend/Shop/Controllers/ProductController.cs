@@ -82,6 +82,12 @@ namespace Shop.Controllers
             return NotFound(new { Messge = "Нету продуктов с таким названием или описанием" });
         }
 
+        [HttpPut("imaegPath")]
+        public async Task<IActionResult> ChangeImagePathProduct([FromForm] ProductRequestChangeImageDTO productDTO)
+        {
+            await ((ProductService)_productService).ChangeImagePathAsync(productDTO);
 
+            return Ok();
+        }
     }
 }

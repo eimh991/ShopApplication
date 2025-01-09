@@ -26,7 +26,7 @@ namespace Shop.Service
                 Name = entity.Name,
                 Price = entity.Price,
                 Description = entity.Description,
-                ImagePath = сheckingProductPictures(imagePaath),
+                ImagePath = CheckingProductPictures(imagePaath),
                 Stock = entity.Stock,
                 CategoryId = category.CategoryId,
             };
@@ -64,7 +64,7 @@ namespace Shop.Service
                 Name = entity.Name,
                 Price = entity.Price,
                 Description = entity.Description,
-                ImagePath = сheckingProductPictures(imagePaath),
+                ImagePath = CheckingProductPictures(imagePaath),
                 Stock = entity.Stock,
                 CategoryId = category.CategoryId,
             };
@@ -106,7 +106,18 @@ namespace Shop.Service
 
         }
 
-        private string сheckingProductPictures(string pathImage)
+        public async Task ChangeImagePathAsync(ProductRequestChangeImageDTO entity)
+        {
+            var product = new Product
+            {
+                ProductId = entity.ProductId,
+                ImagePath = CheckingProductPictures(GenerateImagePath(entity.Image).Result),
+            };
+            await ((ProductRepository)_productRepository).ChangeImagePathProductAsync(product);
+
+        }
+
+        private string CheckingProductPictures(string pathImage)
         {
             if (pathImage == string.Empty  || string.IsNullOrWhiteSpace(pathImage))
             {

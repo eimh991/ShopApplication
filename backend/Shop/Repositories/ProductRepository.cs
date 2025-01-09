@@ -118,5 +118,14 @@ namespace Shop.Repositories
 
             return product;
         }
+
+        public async Task ChangeImagePathProductAsync(Product entity)
+        {
+            await _context.Products
+               .Where(p => p.ProductId == entity.ProductId)
+               .ExecuteUpdateAsync(s => s
+                   .SetProperty(p => p.ImagePath, entity.ImagePath)
+               );
+        }
     }
 }
