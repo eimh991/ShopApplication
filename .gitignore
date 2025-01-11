@@ -29,6 +29,6 @@ dist/
 # Windows
 Thumbs.db
 
-./backend/Shop/wwwroot/static/js/main.fb47e652.js
-./backend/Shop/wwwroot/static/js/main.fb47e652.js.LICENSE.txt
-./backend/Shop/wwwroot/static/js/main.fb47e652.js.map
+wwwroot/static/js/main.85d07a45.js.map
+wwwroot/static/js/main.a94f74e6.js.map
+wwwroot/static/js/main.d3070107.js.LICENSE.txt
