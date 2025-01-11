@@ -12,6 +12,7 @@ import AllProductsPage from './component/AllProductsPage';
 
 const App = () => {
   return (
+    <div style={{ backgroundColor: 'rgb(241, 232, 201)', minHeight: '100vh' }}>
       <BrowserRouter>
           <Navbar />
           <Routes>
@@ -26,6 +27,7 @@ const App = () => {
           </Routes>
           <Footer />
       </BrowserRouter>
+      </div>
   );
 };
 

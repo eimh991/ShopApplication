@@ -106,7 +106,10 @@ const ProductsPage = () => {
       {products.length > 0 ? (
         <div className="row">
           {products.map((product) => (
-            <div key={product.productId} className="col-md-4 mb-4">
+            <div key={product.productId} className="col-md-4 mb-4"
+            onClick={() => 
+              { navigate(`/product/${product.productId}`);}}
+              style={{ cursor: 'pointer' }}>
               <div className="card">
                 <img
                   src={`https://localhost:5260/images/${product.imagePath}`}
