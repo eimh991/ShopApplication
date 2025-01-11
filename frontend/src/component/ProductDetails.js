@@ -23,7 +23,7 @@ const ProductDetails = () => {
         <img 
           src={`https://localhost:5260/images/${product.imagePath}`} 
           alt={product.name} 
-          style={{ maxWidth: '600px', maxHeight: '800px', objectFit: 'contain' }}
+          style={{ maxWidth: '400px', maxHeight: '400px', objectFit: 'contain' }}
         />
       </div>
       <div style={{ marginLeft: '20px' }}>
