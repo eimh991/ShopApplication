@@ -32,25 +32,18 @@ const ProductDetails = () => {
     formData.append('image', newImage); // Передаём файл изображения
 
     try {
-      await axios.put('https://localhost:5260/api/Product/imagePath', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      alert('Изображение успешно обновлено!');
-      // Обновляем изображение продукта
-      const updatedProduct = { ...product, imagePath: newImage.name };
-      setProduct(updatedProduct);
+      await axios.put('https://localhost:5260/api/Product/imagePath', formData);
+      const updatedImagePath = `${product.imagePath}?timestamp=${new Date().getTime()}`;
+      setProduct((prev) => ({ ...prev, imagePath: updatedImagePath }));
+      window.location.reload();
     } catch (error) {
       console.error('Ошибка обновления изображения:', error);
-      alert('Не удалось обновить изображение.');
     }
   };
 
   if (!product) {
     return <p>Загрузка...</p>;
   }
-  console.log(userRole);
 
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -60,14 +53,8 @@ const ProductDetails = () => {
           alt={product.name} 
           style={{ maxWidth: '400px', maxHeight: '400px', objectFit: 'contain' }}
         />
-      </div>
-      <div style={{ marginLeft: '20px' }}>
-        <h1>{product.name}</h1>
-        <p>{product.description}</p>
-        <p>Цена: {product.price} ₽</p>
-        <p>В наличии: {product.stock} шт.</p>
         {userRole === 0 && (
-          <div style={{ marginTop: '20px' }}>
+          <div style={{ marginTop: '10px' }}>
             <h3>Изменить изображение:</h3>
             <input
               type="file"
@@ -79,6 +66,12 @@ const ProductDetails = () => {
             </button>
           </div>
         )}
+      </div>
+      <div style={{ marginLeft: '20px' }}>
+        <h1>{product.name}</h1>
+        <p>{product.description}</p>
+        <p>Цена: {product.price} ₽</p>
+        <p>В наличии: {product.stock} шт.</p>
       </div>
     </div>
   );
