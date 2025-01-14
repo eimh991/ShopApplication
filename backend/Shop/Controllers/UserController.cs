@@ -48,15 +48,16 @@ namespace Shop.Controllers
 
             // Извлекаем значение из claim с типом Sid
             var userStringId = jwtToken?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid)?.Value;
+            var userRole = jwtToken?.Claims.FirstOrDefault(c=>c.Type == ClaimTypes.Role)?.Value;
 
             if (userStringId == null)
             {
                 throw new Exception("Ошибка авторизационных данных");
             }
             int userId = Convert.ToInt32(userStringId);
-            var user = await _userService.GetByIdAsync(userId);
+            //var user = await _userService.GetByIdAsync(userId);
 
-            return Ok(user);
+            return Ok(new {id=userId, role = userRole});
         }
 
         [HttpDelete]

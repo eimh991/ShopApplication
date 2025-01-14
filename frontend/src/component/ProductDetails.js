@@ -17,9 +17,8 @@ const ProductDetails = () => {
   useEffect(() => {
     axios.get('https://localhost:5260/api/User/getme', { withCredentials: true })
       .then ((response) => {
-        console.log('Full user data:', response.data);
         const user = response.data;
-        setUserRole(user.userRole)})
+        setUserRole(user.role)})
       .catch((error) => console.error('Error fetching user details:', error));
   }, []);
 
@@ -53,7 +52,7 @@ const ProductDetails = () => {
           alt={product.name} 
           style={{ maxWidth: '400px', maxHeight: '400px', objectFit: 'contain' }}
         />
-        {userRole === 0 && (
+        {userRole === 'Admin' && (
           <div style={{ marginTop: '10px' }}>
             <h3>Изменить изображение:</h3>
             <input

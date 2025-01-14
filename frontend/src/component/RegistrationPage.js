@@ -21,14 +21,14 @@ const RegisterPage = () => {
         { userName, email, password },
         { headers: { 'Content-Type': 'application/json' } }
       );
-
+      
       console.log('Регистрация успешна:', response);
       setSuccess('Регистрация прошла успешно! Перенаправление на страницу входа...');
 
       // Переход на страницу авторизации через несколько секунд
       setTimeout(() => {
         navigate('/auth');
-      }, 2000);
+      }, 500);
     } catch (err) {
       console.error('Ошибка регистрации:', err);
       setError('Ошибка при регистрации. Проверьте введённые данные.');
