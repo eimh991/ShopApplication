@@ -11,6 +11,6 @@
         public int Quantity { get; set; }
         public int CategoryId { get; set; }
 
-        public string ImagePath { get; set; } = "/images/default.jpg";
+        public string ImagePath { get; set; } = "default.jpg";
     }
 }

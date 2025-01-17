@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Shop.Attribute;
 using Shop.DTO;
+using Shop.Enum;
 using Shop.Interfaces;
 using Shop.Model;
 using Shop.Service;
@@ -82,7 +84,9 @@ namespace Shop.Controllers
             return NotFound(new { Messge = "Нету продуктов с таким названием или описанием" });
         }
 
+        
         [HttpPut("imagePath")]
+        [AuthorizeRole(UserRole.Admin)]
         public async Task<IActionResult> ChangeImagePathProduct([FromForm] ProductRequestChangeImageDTO productDTO)
         {
             await ((ProductService)_productService).ChangeImagePathAsync(productDTO);
