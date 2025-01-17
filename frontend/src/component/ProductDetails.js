@@ -6,7 +6,11 @@ const ProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [userRole, setUserRole] = useState(null);
+  const [userId, setUserId] = useState(null);
   const [newImage, setNewImage] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
 
   useEffect(() => {
     axios.get(`https://localhost:5260/api/Product/id?productID=${id}`)
@@ -18,8 +22,15 @@ const ProductDetails = () => {
     axios.get('https://localhost:5260/api/User/getme', { withCredentials: true })
       .then ((response) => {
         const user = response.data;
-        setUserRole(user.role)})
-      .catch((error) => console.error('Error fetching user details:', error));
+        setUserRole(user.role);
+        setUserId(user.id);
+        console.log(userId);
+        setIsAuthenticated(true);
+      })
+      .catch((error) => {  
+      console.error('Error fetching user details:', error)
+      setIsAuthenticated(false);
+    });
   }, []);
 
   // Обработка отправки нового изображения
@@ -37,6 +48,39 @@ const ProductDetails = () => {
       window.location.reload();
     } catch (error) {
       console.error('Ошибка обновления изображения:', error);
+    }
+  };
+
+
+  const handleQuantityChange = (e) => {
+    const value = Math.min(product.stock, Math.max(1, parseInt(e.target.value) || 1));
+    setQuantity(value);
+  };
+
+   // Обработка добавления в корзину
+   const handleAddToCart = async () => {
+    if (!userId) {
+      alert('Ошибка: пользователь не авторизован.');
+      return;
+    }
+
+    const cartItem = {
+      productId: product.id,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      userId,
+      quantity,
+      categoryId: product.categoryId,
+      imagePath: product.imagePath,
+    };
+
+    try {
+      await axios.post('https://localhost:5260/api/CartItem', cartItem, { withCredentials: true });
+      alert('Товар успешно добавлен в корзину!');
+    } catch (error) {
+      console.error('Ошибка добавления в корзину:', error);
+      alert('Не удалось добавить товар в корзину.');
     }
   };
 
@@ -71,6 +115,35 @@ const ProductDetails = () => {
         <p>{product.description}</p>
         <p>Цена: {product.price} ₽</p>
         <p>В наличии: {product.stock} шт.</p>
+        {isAuthenticated && (
+        <div style={{ marginTop: '20px' }}>
+          <label>
+            Количество:
+            <input
+              type="number"
+              value={quantity}
+              onChange={handleQuantityChange}
+              style={{ marginLeft: '10px', width: '60px' }}
+              min="1"
+              max={product.stock}
+            />
+          </label>
+          <button
+            onClick={handleAddToCart}
+            style={{
+              marginLeft: '10px',
+              padding: '10px 20px',
+              backgroundColor: 'blue',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+            }}
+          >
+            Положить в корзину
+          </button>
+        </div>
+      )}
       </div>
     </div>
   );
