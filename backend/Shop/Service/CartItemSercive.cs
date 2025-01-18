@@ -9,11 +9,14 @@ namespace Shop.Service
     {
         private readonly IRepositoryWithUser<CartItem> _cartItemRepository;
         private readonly IRepository<User> _userRepository;
+        private readonly IRepository<Product> _productRepository;
 
-        public CartItemSercive(IRepositoryWithUser<CartItem> cartItemRepository, IRepository<User> userRepository)
+        public CartItemSercive(IRepositoryWithUser<CartItem> cartItemRepository, IRepository<User> userRepository, IRepository<Product> productRepository)
         {
+            
             _cartItemRepository = cartItemRepository;
             _userRepository = userRepository;
+            _productRepository = productRepository;
         }
 
         public async Task ClearAllCartItemsAsync(int userId)
@@ -24,11 +27,14 @@ namespace Shop.Service
         public async Task CreateCartItemAsync(CartItemDTO cartItemDTO)
         {
             var userId = cartItemDTO.UserId;
-            
+            var product = await _productRepository.GetByIdAsync(cartItemDTO.ProductId);
+
             var cartItem = new CartItem()
             {
                 Cart = await GetUserCartAsync(userId),
                 Quantity = cartItemDTO.Quantity,
+                Product = product
+                /*
                 Product = new Product()
                 {
                         ProductId = cartItemDTO.ProductId,
@@ -37,7 +43,7 @@ namespace Shop.Service
                         ImagePath = cartItemDTO.ImagePath,
                         Name = cartItemDTO.Name,
                         Price = cartItemDTO.Price,
-                },
+                },*/
             };
 
             await _cartItemRepository.AddAsync(userId, cartItem);

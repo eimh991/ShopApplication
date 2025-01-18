@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using Shop.Data;
 using Shop.Interfaces;
 using Shop.Model;
@@ -15,13 +16,19 @@ namespace Shop.Repositories
 
         public async Task AddAsync(int userId, CartItem entity)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+            var user = await _context.Users
+                .Include(u => u.Cart)
+                .FirstOrDefaultAsync(x => x.UserId == userId);
+
             if (user != null)
             {
                 user.Cart.CartItems.Add(entity);
                 await _context.SaveChangesAsync();
             }
-            throw new EntryPointNotFoundException();
+            else
+            {
+                throw new EntryPointNotFoundException();
+            }
         }
 
         public async Task AddRangeAsync(int userId, List<CartItem> entitys)
