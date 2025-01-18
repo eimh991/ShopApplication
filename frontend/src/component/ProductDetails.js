@@ -65,7 +65,7 @@ const ProductDetails = () => {
     }
 
     const cartItem = {
-      productId: product.id,
+      productId: product.productId,
       name: product.name,
       description: product.description,
       price: product.price,
@@ -74,6 +74,7 @@ const ProductDetails = () => {
       categoryId: product.categoryId,
       imagePath: product.imagePath,
     };
+  
 
     try {
       await axios.post('https://localhost:5260/api/CartItem', cartItem, { withCredentials: true });
