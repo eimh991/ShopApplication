@@ -8,7 +8,7 @@ namespace Shop.Interfaces
     {
         Task CreateCartItemAsync(CartItemDTO cartItemDTO);
         Task DeleteCartItemAsync(int cartItemId);
-        Task<IEnumerable<CartItem>> GetAllCartItemsAsync(int userId);
+        Task<IEnumerable<CardItemResponseDTO>> GetAllCartItemsAsync(int userId);
         Task<CartItem> GetCartItemByIdAsync(int userId, int entityId);
         Task UpdateCountCartItemsAsync(int userId, int cartItemId, int quentity);
 

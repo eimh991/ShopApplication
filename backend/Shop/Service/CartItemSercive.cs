@@ -2,6 +2,7 @@
 using Shop.Interfaces;
 using Shop.Model;
 using Shop.Repositories;
+using System.Xml.Linq;
 
 namespace Shop.Service
 {
@@ -54,10 +55,19 @@ namespace Shop.Service
             await _cartItemRepository.DeleteAsync(cartItemId);
         }
 
-        public async Task<IEnumerable<CartItem>> GetAllCartItemsAsync(int userId)
+        public async Task<IEnumerable<CardItemResponseDTO>> GetAllCartItemsAsync(int userId)
         {
-            return await _cartItemRepository.GetAllAsync(userId);
+            var items =  await _cartItemRepository.GetAllAsync(userId);
+            return items.Select(i=> new CardItemResponseDTO()
+            {
+                CartId = i.CartId,
+                Quantity = i.Quantity,
+                ProductId = i.ProductId,
+                CartItemId = i.CartItemId,
+            }).ToList();
         }
+
+         
 
         public async Task<CartItem> GetCartItemByIdAsync(int userId, int entityId)
         {

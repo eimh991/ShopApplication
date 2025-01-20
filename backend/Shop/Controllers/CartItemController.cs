@@ -34,14 +34,14 @@ namespace Shop.Controllers
             return NotFound(new { Messge = "Данный продукт в вашей корзине не найден" });
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CartItem>>> GetCartItems(int userId)
+        public async Task<ActionResult<IEnumerable<CardItemResponseDTO>>> GetAllCartItems(int userId)
         {
             var items = await _cartItemService.GetAllCartItemsAsync(userId);
-            if (items != null || items != Enumerable.Empty<CartItem>())
+            if (items == null || items == Enumerable.Empty<CardItemResponseDTO>())
             {
-                return Ok(items);
+                return Ok(Enumerable.Empty<CardItemResponseDTO>());
             }
-            return NotFound(new { Messge = "У вас нет ничего в корзине" });
+            return Ok(items);
         }
 
         [HttpPut]
