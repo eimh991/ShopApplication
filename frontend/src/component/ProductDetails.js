@@ -10,6 +10,9 @@ const ProductDetails = () => {
   const [newImage, setNewImage] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  //const [cartItems, setCartItems] = useState([]);
+  const [inCart, setInCart] = useState(false);
+  const [cartItemQuantity, setCartItemQuantity] = useState(0);
   
 
   useEffect(() => {
@@ -24,7 +27,6 @@ const ProductDetails = () => {
         const user = response.data;
         setUserRole(user.role);
         setUserId(user.id);
-        console.log(userId);
         setIsAuthenticated(true);
       })
       .catch((error) => {  
@@ -32,6 +34,27 @@ const ProductDetails = () => {
       setIsAuthenticated(false);
     });
   }, []);
+
+
+  useEffect(() => {
+    // Получение корзины пользователя
+    if (userId) {
+      axios.get('https://localhost:5260/api/CartItem', { 
+        params: { userId }, 
+        withCredentials: true 
+      })
+        .then((response) => {
+          console.log('Cart Items:', response.data);
+          //setCartItems(response.data);
+          const cartItem = response.data.find(item => item.productId === parseInt(id));
+          if (cartItem) {
+            setInCart(true);
+            setCartItemQuantity(cartItem.quantity);
+          }
+        })
+        .catch((error) => console.error('Error fetching cart items:', error));
+    }
+  }, [userId, id]);
 
   // Обработка отправки нового изображения
   const handleImageUpload = async () => {
@@ -79,10 +102,22 @@ const ProductDetails = () => {
     try {
       await axios.post('https://localhost:5260/api/CartItem', cartItem, { withCredentials: true });
       alert('Товар успешно добавлен в корзину!');
+      setInCart(true);
+      setCartItemQuantity(quantity);
     } catch (error) {
       console.error('Ошибка добавления в корзину:', error);
       alert('Не удалось добавить товар в корзину.');
     }
+  };
+
+  const handleIncreaseQuantity = async () => {
+    // Здесь будет логика для увеличения количества в корзине
+    alert('Логика для увеличения количества');
+  };
+
+  const handleDecreaseQuantity = async () => {
+    // Здесь будет логика для уменьшения количества в корзине
+    alert('Логика для уменьшения количества');
   };
 
   if (!product) {
@@ -117,34 +152,44 @@ const ProductDetails = () => {
         <p>Цена: {product.price} ₽</p>
         <p>В наличии: {product.stock} шт.</p>
         {isAuthenticated && (
-        <div style={{ marginTop: '20px' }}>
-          <label>
-            Количество:
-            <input
-              type="number"
-              value={quantity}
-              onChange={handleQuantityChange}
-              style={{ marginLeft: '10px', width: '60px' }}
-              min="1"
-              max={product.stock}
-            />
-          </label>
-          <button
-            onClick={handleAddToCart}
-            style={{
-              marginLeft: '10px',
-              padding: '10px 20px',
-              backgroundColor: 'blue',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-            }}
-          >
-            Положить в корзину
-          </button>
-        </div>
-      )}
+          <div style={{ marginTop: '20px' }}>
+            {inCart ? (
+              <div>
+                <p>Товар уже в корзине. Количество: {cartItemQuantity}</p>
+                <button onClick={handleIncreaseQuantity}>+</button>
+                <button onClick={handleDecreaseQuantity}>-</button>
+              </div>
+            ) : (
+              <div>
+                <label>
+                  Количество:
+                  <input
+                    type="number"
+                    value={quantity}
+                    onChange={handleQuantityChange}
+                    style={{ marginLeft: '10px', width: '60px' }}
+                    min="1"
+                    max={product.stock}
+                  />
+                </label>
+                <button
+                  onClick={handleAddToCart}
+                  style={{
+                    marginLeft: '10px',
+                    padding: '10px 20px',
+                    backgroundColor: 'blue',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Положить в корзину
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
