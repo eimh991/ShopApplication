@@ -44,12 +44,12 @@ namespace Shop.Controllers
             return Ok(items);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> QuentityChange(int userId, int cartItemId, int quentity)
+        [HttpPut("QuentityChange")]
+        public async Task<IActionResult> QuentityChange(int cartItemId, int quentity)
         {
-            await _cartItemService.UpdateCountCartItemsAsync(userId, cartItemId, quentity);
+            await _cartItemService.UpdateCountCartItemsAsync(cartItemId, quentity);
 
-            return RedirectToAction("GetCartItem", new { userId = userId, cartItemId = cartItemId });
+            return Ok();
         }
 
         [HttpDelete]

@@ -77,24 +77,27 @@ namespace Shop.Repositories
 
         }
 
-        public async Task UpdateAsync(int userId, CartItem entity)
+        public async Task UpdateAsync(CartItem entity)
         {
-            var  user = await _context.Users
-                .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.UserId == userId);
+            //var  user = await _context.Users
+            //.AsNoTracking()
+            //.FirstOrDefaultAsync(u => u.UserId == userId);
 
-            if (user != null)
-            {
-                var cartItem = user.Cart.CartItems.FirstOrDefault(ci => ci.CartId == entity.CartItemId);
+            //if (user != null)
+            //{
+            var cartItem = await _context.CartItems
+                     .FirstOrDefaultAsync(c => c.CartItemId == entity.CartItemId);
                 if (cartItem != null)
                 {
-                    cartItem = new CartItem { Quantity  = entity.Quantity };
+                    cartItem.Quantity = entity.Quantity;
                     if (cartItem.Quantity == 0)
                     {
                         await DeleteAsync(cartItem.CartItemId);
                     }
-                }
+                
+                await _context.SaveChangesAsync();
             }
+            //}
         }
 
         public async Task DeleteAllCartItemsAsync(int userId)
@@ -105,6 +108,11 @@ namespace Shop.Repositories
                 user.Cart.CartItems.Clear();
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public Task UpdateAsync(int userId, CartItem entity)
+        {
+            throw new NotImplementedException();
         }
     }
 }

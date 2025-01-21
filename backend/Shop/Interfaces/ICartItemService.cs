@@ -10,7 +10,7 @@ namespace Shop.Interfaces
         Task DeleteCartItemAsync(int cartItemId);
         Task<IEnumerable<CardItemResponseDTO>> GetAllCartItemsAsync(int userId);
         Task<CartItem> GetCartItemByIdAsync(int userId, int entityId);
-        Task UpdateCountCartItemsAsync(int userId, int cartItemId, int quentity);
+        Task UpdateCountCartItemsAsync(int cartItemId, int quentity);
 
         Task ClearAllCartItemsAsync(int userId);
     }

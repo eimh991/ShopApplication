@@ -74,11 +74,11 @@ namespace Shop.Service
             return await _cartItemRepository.GetByIdAsync(userId, entityId);
         }
 
-        public async Task UpdateCountCartItemsAsync(int userId, int cartItemId, int quentity)
+        public async Task UpdateCountCartItemsAsync(int cartItemId, int quentity)
         {
             var cartItem = new CartItem { CartItemId = cartItemId, Quantity = quentity };
 
-            await _cartItemRepository.UpdateAsync(userId, cartItem);
+            await ((CartItemRepository)_cartItemRepository).UpdateAsync(cartItem);
         }
 
         private async Task<Cart> GetUserCartAsync(int userId) {
