@@ -30,7 +30,7 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-light" style={{ background: 'linear-gradient(90deg, rgb(70, 70, 252) 0%, rgb(192, 172, 106) 100%)' }}>
+        <nav className="navbar navbar-expand-lg navbar-light" style={{ background: 'linear-gradient(90deg, rgb(149, 70, 252) 0%, rgb(192, 172, 106) 100%)' }}>
             <Link className="navbar-brand" to="/">Магазин</Link>
             <button
                 className="navbar-toggler"

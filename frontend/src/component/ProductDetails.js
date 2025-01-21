@@ -153,42 +153,89 @@ const ProductDetails = () => {
         <p>В наличии: {product.stock} шт.</p>
         {isAuthenticated && (
           <div style={{ marginTop: '20px' }}>
-            {inCart ? (
-              <div>
-                <p>Товар уже в корзине. Количество: {cartItemQuantity}</p>
-                <button onClick={handleIncreaseQuantity}>+</button>
-                <button onClick={handleDecreaseQuantity}>-</button>
-              </div>
-            ) : (
-              <div>
-                <label>
-                  Количество:
-                  <input
-                    type="number"
-                    value={quantity}
-                    onChange={handleQuantityChange}
-                    style={{ marginLeft: '10px', width: '60px' }}
-                    min="1"
-                    max={product.stock}
-                  />
-                </label>
-                <button
-                  onClick={handleAddToCart}
-                  style={{
-                    marginLeft: '10px',
-                    padding: '10px 20px',
-                    backgroundColor: 'blue',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Положить в корзину
-                </button>
-              </div>
-            )}
-          </div>
+          {inCart ? (
+          <div style={{ textAlign: 'center', marginTop: '20px' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
+          <button
+            onClick={handleIncreaseQuantity}
+            style={{
+              width: '50px',
+              height: '50px',
+              fontSize: '24px',
+              fontWeight: 'bold',
+              backgroundColor: '#4CAF50',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+            }}
+          >
+            +
+          </button>
+            <span style={{ fontSize: '18px', fontWeight: 'bold' }}>{cartItemQuantity}</span>
+            <button
+            onClick={handleDecreaseQuantity}
+            style={{
+              width: '50px',
+              height: '50px',
+              fontSize: '24px',
+              fontWeight: 'bold',
+              backgroundColor: '#f44336',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+            }}
+          >
+          -
+        </button>
+        </div>
+          <div
+            style={{
+            marginTop: '15px',
+            padding: '15px',
+            backgroundColor: '#d4edda',
+            color: '#155724',
+            border: '1px solid rgb(123, 231, 148)',
+            borderRadius: '5px',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            display: 'inline-block',
+          }}
+        >
+        Товар уже в корзине
+        </div>
+      </div>
+      ) : (
+        <div>
+        <label>
+          Количество:
+          <input
+            type="number"
+            value={quantity}
+            onChange={handleQuantityChange}
+            style={{ marginLeft: '10px', width: '60px' }}
+            min="1"
+            max={product.stock}
+          />
+        </label>
+        <button
+          onClick={handleAddToCart}
+          style={{
+            marginLeft: '10px',
+            padding: '10px 20px',
+            backgroundColor: 'blue',
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+          }}
+        >
+          Положить в корзину
+        </button>
+      </div>
+      )}      
+        </div>
         )}
       </div>
     </div>
