@@ -13,7 +13,7 @@ const ProductDetails = () => {
   //const [cartItems, setCartItems] = useState([]);
   const [inCart, setInCart] = useState(false);
   const [cartItemQuantity, setCartItemQuantity] = useState(0);
-  
+  const [cartItemId, setCartItemId] = useState(null);
 
   useEffect(() => {
     axios.get(`https://localhost:5260/api/Product/id?productID=${id}`)
@@ -50,6 +50,7 @@ const ProductDetails = () => {
           if (cartItem) {
             setInCart(true);
             setCartItemQuantity(cartItem.quantity);
+            setCartItemId(cartItem.cartItemId);
           }
         })
         .catch((error) => console.error('Error fetching cart items:', error));
@@ -111,8 +112,26 @@ const ProductDetails = () => {
   };
 
   const handleIncreaseQuantity = async () => {
-    // Здесь будет логика для увеличения количества в корзине
-    alert('Логика для увеличения количества');
+    if (cartItemQuantity >= product.stock) {
+      alert('Нельзя добавить больше товара, чем есть в наличии.');
+      return;
+    }
+    try {
+      const newQuantity = cartItemQuantity + 1;
+      console.log(cartItemId + " " + newQuantity);
+      await axios.put('https://localhost:5260/api/CartItem/QuentityChange', null, {
+        params: {
+          cartItemId: cartItemId,
+          quentity: newQuantity,
+        },
+        withCredentials: true,
+      });
+  
+      setCartItemQuantity(newQuantity); // Обновляем количество в корзине
+    } catch (error) {
+      console.error('Ошибка при увеличении количества:', error);
+      alert('Не удалось обновить количество товара в корзине.');
+    }
   };
 
   const handleDecreaseQuantity = async () => {
