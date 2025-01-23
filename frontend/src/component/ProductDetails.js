@@ -135,8 +135,26 @@ const ProductDetails = () => {
   };
 
   const handleDecreaseQuantity = async () => {
-    // Здесь будет логика для уменьшения количества в корзине
-    alert('Логика для уменьшения количества');
+    if(cartItemQuantity <= 1) {
+      alert('Нельзя уменьшеть количество товара меньше одного');
+      return;
+    }
+    try {
+      const newQuantity = cartItemQuantity - 1;
+      console.log(cartItemId + " " + newQuantity);
+      await axios.put('https://localhost:5260/api/CartItem/QuentityChange', null, {
+        params: {
+          cartItemId: cartItemId,
+          quentity: newQuantity,
+        },
+        withCredentials: true,
+      });
+  
+      setCartItemQuantity(newQuantity); // Обновляем количество в корзине
+    } catch (error) {
+      console.error('Ошибка при увеличении количества:', error);
+      alert('Не удалось обновить количество товара в корзине.');
+    }
   };
 
   if (!product) {
@@ -176,23 +194,6 @@ const ProductDetails = () => {
           <div style={{ textAlign: 'center', marginTop: '20px' }}>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
           <button
-            onClick={handleIncreaseQuantity}
-            style={{
-              width: '50px',
-              height: '50px',
-              fontSize: '24px',
-              fontWeight: 'bold',
-              backgroundColor: '#4CAF50',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-            }}
-          >
-            +
-          </button>
-            <span style={{ fontSize: '18px', fontWeight: 'bold' }}>{cartItemQuantity}</span>
-            <button
             onClick={handleDecreaseQuantity}
             style={{
               width: '50px',
@@ -207,6 +208,23 @@ const ProductDetails = () => {
             }}
           >
           -
+          </button>
+            <span style={{ fontSize: '18px', fontWeight: 'bold' }}>{cartItemQuantity}</span>
+            <button
+            onClick={handleIncreaseQuantity}
+            style={{
+              width: '50px',
+              height: '50px',
+              fontSize: '24px',
+              fontWeight: 'bold',
+              backgroundColor: '#4CAF50',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+            }}
+          >
+          +
         </button>
         </div>
           <div

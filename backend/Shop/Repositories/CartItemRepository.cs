@@ -79,25 +79,15 @@ namespace Shop.Repositories
 
         public async Task UpdateAsync(CartItem entity)
         {
-            //var  user = await _context.Users
-            //.AsNoTracking()
-            //.FirstOrDefaultAsync(u => u.UserId == userId);
 
-            //if (user != null)
-            //{
             var cartItem = await _context.CartItems
                      .FirstOrDefaultAsync(c => c.CartItemId == entity.CartItemId);
-                if (cartItem != null)
+                if (cartItem != null && entity.Quantity > 0)
                 {
                     cartItem.Quantity = entity.Quantity;
-                    if (cartItem.Quantity == 0)
-                    {
-                        await DeleteAsync(cartItem.CartItemId);
-                    }
-                
+             
                 await _context.SaveChangesAsync();
             }
-            //}
         }
 
         public async Task DeleteAllCartItemsAsync(int userId)
