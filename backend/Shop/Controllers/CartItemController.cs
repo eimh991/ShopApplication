@@ -2,6 +2,8 @@
 using Shop.DTO;
 using Shop.Interfaces;
 using Shop.Model;
+using Shop.Repositories;
+using Shop.Service;
 
 namespace Shop.Controllers
 {
@@ -58,6 +60,14 @@ namespace Shop.Controllers
            await _cartItemService.DeleteCartItemAsync(cartItemId);
 
             return Ok();
+        }
+
+        [HttpGet("GetAllCartProduct")]
+        public async Task<IEnumerable<CartProductDTO>> GetAllCartProduct(int userId)
+        {
+            var cartProduct = await ((CartItemSercive)_cartItemService).GetAllCartProductAsync(userId);
+
+            return cartProduct;
         }
     }
 }

@@ -81,6 +81,13 @@ namespace Shop.Service
             await ((CartItemRepository)_cartItemRepository).UpdateAsync(cartItem);
         }
 
+        public async Task<IEnumerable<CartProductDTO>> GetAllCartProductAsync(int userId)
+        {
+            var cartProduct  = await ((CartItemRepository)_cartItemRepository).GetAllCartProductAsync(userId);
+
+            return cartProduct;
+        }
+
         private async Task<Cart> GetUserCartAsync(int userId) {
             var user = await ((UserRepository)_userRepository).GetUserWithCartAsync(userId);
             if(user != null) {

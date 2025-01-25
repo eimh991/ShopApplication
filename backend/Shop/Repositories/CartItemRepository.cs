@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Shop.Data;
+using Shop.DTO;
 using Shop.Interfaces;
 using Shop.Model;
 
@@ -103,6 +104,42 @@ namespace Shop.Repositories
         public Task UpdateAsync(int userId, CartItem entity)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<CartProductDTO>> GetAllCartProductAsync(int userId)
+        {
+            var user = await _context.Users
+                .AsNoTracking()
+                .Include(u => u.Cart)
+                .ThenInclude(c => c.CartItems)
+                .FirstOrDefaultAsync(u => u.UserId == userId);
+
+            if (user?.Cart?.CartItems == null || !user.Cart.CartItems.Any())
+            {
+                return Enumerable.Empty<CartProductDTO>();
+            }
+
+            var productsId = user.Cart.CartItems.Select(c => c.ProductId).ToList();
+
+            var products = await _context.Products
+                                 .Where(p => productsId.Contains(p.ProductId))
+                                 .ToListAsync();
+
+            var cartProducts = user.Cart.CartItems.Join(
+            products,
+            cartItem => cartItem.ProductId,  // Ключ из CartItem
+            product => product.ProductId,          // Ключ из Product
+            (cartItem, product) => new CartProductDTO
+            {
+                ProductId = product.ProductId,
+                ProductName = product.Name,
+                ProductDescription = product.Description,
+                Price = product.Price,
+                Quantity = cartItem.Quantity, // Количество из CartItem
+                ImageUrl = product.ImagePath,
+            });
+
+            return cartProducts;
         }
     }
 }
