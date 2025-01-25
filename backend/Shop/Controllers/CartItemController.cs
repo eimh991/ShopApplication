@@ -53,11 +53,11 @@ namespace Shop.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete(int cartItemId, int userId)
+        public async Task<IActionResult> Delete(int cartItemId)
         {
            await _cartItemService.DeleteCartItemAsync(cartItemId);
 
-           return RedirectToAction("GetCartItems", new { userId = userId });
+            return Ok();
         }
     }
 }

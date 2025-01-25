@@ -157,6 +157,22 @@ const ProductDetails = () => {
     }
   };
 
+  const handleRemoveFromCart = async () => {
+    try {
+      await axios.delete('https://localhost:5260/api/CartItem', {
+        params: { cartItemId },
+        withCredentials: true,
+      });
+      alert('Товар удалён из корзины!');
+      setInCart(false);
+      setCartItemQuantity(0);
+      setCartItemId(null);
+    } catch (error) {
+      console.error('Ошибка удаления товара из корзины:', error);
+      alert('Не удалось удалить товар из корзины.');
+    }
+  };
+
   if (!product) {
     return <p>Загрузка...</p>;
   }
@@ -227,20 +243,43 @@ const ProductDetails = () => {
           +
         </button>
         </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '15px' }}>
           <div
             style={{
-            marginTop: '15px',
-            padding: '15px',
             backgroundColor: '#d4edda',
             color: '#155724',
             border: '1px solid rgb(123, 231, 148)',
             borderRadius: '5px',
             fontSize: '16px',
             fontWeight: 'bold',
-            display: 'inline-block',
+            display: 'flex',
+            width: '200px',
+            height: '50px',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
         Товар уже в корзине
+        </div>
+        <button
+            onClick={handleRemoveFromCart}
+              style={{
+                width: '200px',
+                height: '50px',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                backgroundColor: '#f55e40',
+                color: 'white',
+                border: 'none',
+                borderRadius: '5px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                }}
+              >
+              Удалить из корзины
+              </button>
         </div>
       </div>
       ) : (
