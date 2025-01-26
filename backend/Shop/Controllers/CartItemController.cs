@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shop.DTO;
 using Shop.Interfaces;
 using Shop.Model;
@@ -62,12 +63,13 @@ namespace Shop.Controllers
             return Ok();
         }
 
+        
         [HttpGet("GetAllCartProduct")]
         public async Task<IEnumerable<CartProductDTO>> GetAllCartProduct(int userId)
         {
-            var cartProduct = await ((CartItemSercive)_cartItemService).GetAllCartProductAsync(userId);
+            var cartProducts = await ((CartItemSercive)_cartItemService).GetAllCartProductAsync(userId);
 
-            return cartProduct;
+            return cartProducts;
         }
     }
 }
