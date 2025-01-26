@@ -133,7 +133,6 @@ namespace Shop.Repositories
             {
                 ProductId = product.ProductId,
                 ProductName = product.Name,
-                ProductDescription = product.Description,
                 Price = product.Price,
                 Quantity = cartItem.Quantity, // Количество из CartItem
                 ImageUrl = product.ImagePath,
