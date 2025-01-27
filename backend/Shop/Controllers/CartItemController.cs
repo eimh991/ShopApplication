@@ -64,8 +64,8 @@ namespace Shop.Controllers
         }
 
         
-        [HttpGet("GetAllCartProduct")]
-        public async Task<IEnumerable<CartProductDTO>> GetAllCartProduct(int userId)
+        [HttpGet("CartProducts")]
+        public async Task<IEnumerable<CartProductDTO>> GetAllCartProduct([FromQuery] int userId)
         {
             var cartProducts = await ((CartItemSercive)_cartItemService).GetAllCartProductAsync(userId);
 

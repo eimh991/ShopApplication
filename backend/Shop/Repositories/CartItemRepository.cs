@@ -135,7 +135,7 @@ namespace Shop.Repositories
                 ProductName = product.Name,
                 Price = product.Price,
                 Quantity = cartItem.Quantity, // Количество из CartItem
-                ImageUrl = product.ImagePath,
+                ImagePath = product.ImagePath,
             });
 
             return cartProducts;
