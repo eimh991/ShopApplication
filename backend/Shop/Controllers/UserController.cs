@@ -95,5 +95,20 @@ namespace Shop.Controllers
             return Ok(user);
         }
 
+        [HttpGet("checkmoney")]
+        public async Task<ActionResult<bool>> CheckMoneyInAccount(int id, decimal cartCoast)
+        {
+            var user = await _userService.GetByIdAsync(id);
+            if (user == null)
+            {
+                throw new Exception("Нету такого пользователя");
+            }
+            if (user.Balance >= cartCoast)
+            {
+                return true;
+            }
+            return false;
+        }
+
     }
 }
