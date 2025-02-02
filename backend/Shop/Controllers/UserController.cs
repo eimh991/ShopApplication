@@ -96,9 +96,9 @@ namespace Shop.Controllers
         }
 
         [HttpGet("checkmoney")]
-        public async Task<ActionResult<bool>> CheckMoneyInAccount(int id, decimal cartCoast)
+        public async Task<ActionResult<bool>> CheckMoneyInAccount(int userId, decimal cartCoast)
         {
-            var user = await _userService.GetByIdAsync(id);
+            var user = await _userService.GetByIdAsync(userId);
             if (user == null)
             {
                 throw new Exception("Нету такого пользователя");
