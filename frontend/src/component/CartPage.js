@@ -4,6 +4,7 @@ import axios from "axios";
 
 const CartPage = () => {
   const [cartProducts, setCartProducts] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -18,7 +19,7 @@ const CartPage = () => {
       try {
         const userResponse = await axios.get("https://localhost:5260/api/User/getme");
         const user = userResponse.data;
-        console.log(user.id);
+        //console.log(user.id);
 
         if (!user.id) {
           navigate("/auth"); // Перенаправление на главную, если пользователь не авторизован
@@ -30,11 +31,10 @@ const CartPage = () => {
         const cartResponse = await axios.get(
           `https://localhost:5260/api/CartItem/CartProducts?userId=${user.id}`
         );
-        console.log(cartResponse.data);
         setCartProducts(cartResponse.data);
       } catch (error) {
         console.error("Ошибка при загрузке данных корзины:", error);
-        navigate("/"); // Перенаправление при ошибке авторизации
+        navigate("/"); 
       }
     };
 
@@ -53,6 +53,7 @@ const CartPage = () => {
       }
 
       setLoading(true);
+      setErrorMessage("");
 
       const checkMoneyResponse = await axios.get(
         `https://localhost:5260/api/User/checkmoney?userId=${user.id}&cartCoast=${totalCost}`
@@ -64,7 +65,7 @@ const CartPage = () => {
         // Логика дальнейших действий будет добавлена позже
       } else {
         // Если средств не хватает
-        alert("Недостаточно средств на счете.");
+        setErrorMessage("❌ Недостаточно средств на счете. Пополните баланс через любой удобный сервис.");
       }
     } catch (error) {
       console.error("Ошибка при покупке:", error);
@@ -80,6 +81,18 @@ const CartPage = () => {
   return (
     <div className="container">
       <h1 className="text-center my-4">Корзина</h1>
+      {errorMessage && (
+        <div className="alert alert-danger text-center" role="alert">
+          {errorMessage} <br />
+          <a href="https://www.tinkoff.ru/" target="_blank" rel="noopener noreferrer" className="text-primary">
+            🔗 Пополнить через Тинькофф
+          </a>
+          {" | "}
+          <a href="https://qiwi.com/" target="_blank" rel="noopener noreferrer" className="text-primary">
+            🔗 Пополнить через QIWI
+          </a>
+        </div>
+      )}
       {cartProducts.length === 0 ? (
         <p>Ваша корзина пуста.</p>
       ) : (
