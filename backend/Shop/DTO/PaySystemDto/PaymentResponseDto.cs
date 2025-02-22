@@ -3,6 +3,6 @@
     public class PaymentResponseDto
     {
         public string PaymentUrl { get; set; }
-        public string PaymentId { get; set; }
+        public string OrderId { get; set; }
     }
 }
