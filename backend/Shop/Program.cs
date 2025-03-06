@@ -9,6 +9,7 @@ using Shop.Interfaces;
 using Shop.Model;
 using Shop.Repositories;
 using Shop.Service;
+using Shop.Service.PaymentService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>();
 //builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
 builder.Services.AddScoped<IJwtProvider,JwtProvider>();
+builder.Services.AddHttpClient<QiwiPaymentService>();
+builder.Services.AddHttpClient<TinkoffPaymentService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
@@ -36,6 +39,8 @@ builder.Services.AddScoped<IRepository<User>, UserRepository>();
 builder.Services.AddScoped<IRepository<Product>, ProductRepository>();
 builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
 builder.Services.AddScoped<IRepositoryWithUser<CartItem>, CartItemRepository>();
+builder.Services.AddScoped<IPaymentService>(sp => sp.GetRequiredService<QiwiPaymentService>());
+builder.Services.AddScoped<IPaymentService>(sp => sp.GetRequiredService<TinkoffPaymentService>());
 var jwtOptions = builder.Configuration.GetSection("JwtOptions").Get<JwtOptions>();
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
 builder.Services.AddApiAuthentication(Options.Create(jwtOptions));

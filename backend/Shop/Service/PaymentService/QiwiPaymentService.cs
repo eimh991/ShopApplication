@@ -14,7 +14,8 @@ namespace Shop.Service.PaymentService
 
         public QiwiPaymentService(IConfiguration configuration, HttpClient httpClient)
         {
-            _apiKey = configuration["PaymentSetting:QiwiApiKey"]?? throw new ArgumentNullException("Qiwi API key is missing");
+            _apiKey = configuration["PaymentSetting:QiwiApiKey"]
+                ?? throw new ArgumentNullException("Qiwi API key is missing");
             _httpClient = httpClient;
         }
    
@@ -25,11 +26,10 @@ namespace Shop.Service.PaymentService
             {
                 amount = new { requestDto.Currency, value = requestDto.Amount },
                 comment = requestDto.Description,
-                expirationDateTime = DateTime.UtcNow.AddMinutes(30).ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                successUrl = requestDto.SuccessUrl,
             };
 
-            var jsonPayload = JsonSerializer.Serialize(payload);
-            var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+            var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
 
             // Добавляем API-ключ в заголовки
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
