@@ -36,7 +36,8 @@ namespace Shop.Controllers
 
             /*var userStringId = HttpContext.User.Claims
                 .FirstOrDefault(c => c.Type == ClaimTypes.Sid)?.Value;*/
-            var token = Request.Cookies["test-cookie"];
+            var token = getToken();
+
             if (string.IsNullOrEmpty(token))
             {
                 return Unauthorized("Token not found in cookies.");
@@ -47,8 +48,8 @@ namespace Shop.Controllers
             var jwtToken = handler.ReadJwtToken(token);
 
             // Извлекаем значение из claim с типом Sid
-            var userStringId = jwtToken?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid)?.Value;
-            var userRole = jwtToken?.Claims.FirstOrDefault(c=>c.Type == ClaimTypes.Role)?.Value;
+            var userStringId = GetIdFromClaims(jwtToken);
+            var userRole = GetRoleFromClaims(jwtToken);
 
             if (userStringId == null)
             {
@@ -109,6 +110,21 @@ namespace Shop.Controllers
             }
             return false;
         }
+
+        private string GetIdFromClaims(JwtSecurityToken jwt)
+        {
+            return jwt?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid)?.Value;
+        }
+
+        private string GetRoleFromClaims(JwtSecurityToken jwt)
+        {
+            return jwt?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+        }
+
+        private string getToken()
+        {
+            return Request.Cookies["test-cookie"];
+        } 
 
     }
 }
