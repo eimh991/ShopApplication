@@ -50,6 +50,7 @@ namespace Shop.Controllers
         [HttpPut("QuentityChange")]
         public async Task<IActionResult> QuentityChange(int cartItemId, int quentity)
         {
+            
             await _cartItemService.UpdateCountCartItemsAsync(cartItemId, quentity);
 
             return Ok();

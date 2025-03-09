@@ -44,12 +44,13 @@ const ProductDetails = () => {
         withCredentials: true 
       })
         .then((response) => {
-          console.log('Cart Items:', response.data);
+          //console.log('Cart Items:', response.data);
           //setCartItems(response.data);
           const cartItem = response.data.find(item => item.productId === parseInt(id));
           if (cartItem) {
             setInCart(true);
             setCartItemQuantity(cartItem.quantity);
+            console.log(cartItem.cartItem);
             setCartItemId(cartItem.cartItemId);
           }
         })
@@ -102,7 +103,7 @@ const ProductDetails = () => {
 
     try {
       await axios.post('https://localhost:5260/api/CartItem', cartItem, { withCredentials: true });
-      alert('Товар успешно добавлен в корзину!');
+      //alert('Товар успешно добавлен в корзину!');
       setInCart(true);
       setCartItemQuantity(quantity);
     } catch (error) {
@@ -136,7 +137,7 @@ const ProductDetails = () => {
 
   const handleDecreaseQuantity = async () => {
     if(cartItemQuantity <= 1) {
-      alert('Нельзя уменьшеть количество товара меньше одного');
+      alert('Нельзя уменьшить количество меньше чем  один товар');
       return;
     }
     try {
