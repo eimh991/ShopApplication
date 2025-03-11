@@ -19,11 +19,11 @@ namespace Shop.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCartItem(CartItemDTO cartItemDTO)
+        public async Task<ActionResult<int>> CreateCartItem(CartItemDTO cartItemDTO)
         {
-            await _cartItemService.CreateCartItemAsync(cartItemDTO);
+           var carItemId =  await _cartItemService.CreateCartItemAsync(cartItemDTO);
 
-            return Ok();
+            return Ok(carItemId);
         }
 
         [HttpGet("id")]
@@ -48,10 +48,9 @@ namespace Shop.Controllers
         }
 
         [HttpPut("QuentityChange")]
-        public async Task<IActionResult> QuentityChange(int cartItemId, int quentity)
+        public async Task<IActionResult> QuentityChange(int cartItemId, int quantity)
         {
-            
-            await _cartItemService.UpdateCountCartItemsAsync(cartItemId, quentity);
+            await _cartItemService.UpdateCountCartItemsAsync(cartItemId, quantity);
 
             return Ok();
         }

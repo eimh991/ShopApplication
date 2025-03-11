@@ -140,5 +140,23 @@ namespace Shop.Repositories
 
             return cartProducts;
         }
+
+        public async Task<int> AddAsyncAndReturnCartItemId(int userId, CartItem entity)
+        {
+            var user = await _context.Users
+                .Include(u => u.Cart)
+                .FirstOrDefaultAsync(x => x.UserId == userId);
+
+            if (user != null)
+            {
+                user.Cart.CartItems.Add(entity);
+                await _context.SaveChangesAsync();
+                return entity.CartItemId;
+            }
+            else
+            {
+                throw new EntryPointNotFoundException();
+            }
+        }
     }
 }

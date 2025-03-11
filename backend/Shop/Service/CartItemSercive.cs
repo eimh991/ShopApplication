@@ -25,7 +25,7 @@ namespace Shop.Service
            await ((CartItemRepository)_cartItemRepository).DeleteAllCartItemsAsync(userId);
         }
 
-        public async Task CreateCartItemAsync(CartItemDTO cartItemDTO)
+        public async Task<int> CreateCartItemAsync(CartItemDTO cartItemDTO)
         {
             var userId = cartItemDTO.UserId;
             var product = await _productRepository.GetByIdAsync(cartItemDTO.ProductId);
@@ -47,7 +47,8 @@ namespace Shop.Service
                 },*/
             };
 
-            await _cartItemRepository.AddAsync(userId, cartItem);
+           var carItemId =  await ((CartItemRepository)_cartItemRepository).AddAsyncAndReturnCartItemId(userId, cartItem);
+            return carItemId;
         }
 
         public async Task DeleteCartItemAsync(int cartItemId)
@@ -74,9 +75,9 @@ namespace Shop.Service
             return await _cartItemRepository.GetByIdAsync(userId, entityId);
         }
 
-        public async Task UpdateCountCartItemsAsync(int cartItemId, int quentity)
+        public async Task UpdateCountCartItemsAsync(int cartItemId, int quantity)
         {
-            var cartItem = new CartItem { CartItemId = cartItemId, Quantity = quentity };
+            var cartItem = new CartItem { CartItemId = cartItemId, Quantity = quantity };
 
             await ((CartItemRepository)_cartItemRepository).UpdateAsync(cartItem);
         }
