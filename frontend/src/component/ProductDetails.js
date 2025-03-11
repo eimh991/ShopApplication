@@ -49,6 +49,7 @@ const ProductDetails = () => {
           const cartItem = response.data.find(item => item.productId === parseInt(id));
           if (cartItem) {
             setInCart(true);
+            console.log('CartItem:', cartItem); 
             setCartItemQuantity(cartItem.quantity);
             console.log(cartItem.cartItem);
             setCartItemId(cartItem.cartItemId);
@@ -102,17 +103,27 @@ const ProductDetails = () => {
   
 
     try {
-      await axios.post('https://localhost:5260/api/CartItem', cartItem, { withCredentials: true });
+      const response  = await axios.post('https://localhost:5260/api/CartItem', cartItem, { withCredentials: true });
+      const newCartItem = response.data;
+      console.log("Добавленный товар в корзину:", newCartItem);
       //alert('Товар успешно добавлен в корзину!');
       setInCart(true);
       setCartItemQuantity(quantity);
+      setCartItemId(newCartItem );
     } catch (error) {
       console.error('Ошибка добавления в корзину:', error);
+      if (error.response) {
+        console.error('Ошибка ответа сервера:', error.response.data); // Логируем подробности ошибки от сервера
+      }
       alert('Не удалось добавить товар в корзину.');
     }
   };
 
   const handleIncreaseQuantity = async () => {
+    if (!cartItemId) {
+      alert('Ошибка: товар не найден в корзине.');
+      return;
+    }
     if (cartItemQuantity >= product.stock) {
       alert('Нельзя добавить больше товара, чем есть в наличии.');
       return;
@@ -123,7 +134,7 @@ const ProductDetails = () => {
       await axios.put('https://localhost:5260/api/CartItem/QuentityChange', null, {
         params: {
           cartItemId: cartItemId,
-          quentity: newQuantity,
+          quantity: newQuantity,
         },
         withCredentials: true,
       });
@@ -136,6 +147,10 @@ const ProductDetails = () => {
   };
 
   const handleDecreaseQuantity = async () => {
+    if (!cartItemId) {
+      alert('Ошибка: товар не найден в корзине.');
+      return;
+    }
     if(cartItemQuantity <= 1) {
       alert('Нельзя уменьшить количество меньше чем  один товар');
       return;
@@ -146,7 +161,7 @@ const ProductDetails = () => {
       await axios.put('https://localhost:5260/api/CartItem/QuentityChange', null, {
         params: {
           cartItemId: cartItemId,
-          quentity: newQuantity,
+          quantity: newQuantity,
         },
         withCredentials: true,
       });
