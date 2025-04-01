@@ -32,6 +32,7 @@ const CartPage = () => {
           `https://localhost:5260/api/CartItem/CartProducts?userId=${user.id}`
         );
         setCartProducts(cartResponse.data);
+        console.log(cartResponse.data);
       } catch (error) {
         console.error("Ошибка при загрузке данных корзины:", error);
         navigate("/"); 
@@ -110,16 +111,25 @@ const CartPage = () => {
                 </div>
                 <div className="col-md-8">
                   <div className="card-body" style={{ padding: "15px" }}>
-                    <h5 className="card-title" style={{ fontSize: "20px" }}>{product.name}</h5>
-                    <p className="card-text" style={{ fontSize: "14px", color: "#777" }}>
-                      {product.description}
-                    </p>
+                  <h5 className="card-title" style={{ fontSize: "20px" }}>
+                    <a 
+                      href={`https://localhost:5260/product/${product.productId}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style={{ color: "inherit", textDecoration: "none" }} // Убираем стандартные стили ссылок
+                    >
+                      {product.productName} 
+                    </a>
+                  </h5>
+                  <p className="card-text" style={{ fontSize: "14px", color: "#777" }}>
+                    {product.description}
+                  </p>
                     <div className="d-flex justify-content-between align-items-center" style={{ marginTop: "10px" }}>
                       <p className="card-text" style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "0" }}>
                         Количество: <span style={{ color: "#ff5722" }}>{product.quantity}</span>
                       </p>
                       <p className="card-text" style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "0" }}>
-                        Цена: <span style={{ color: "#388e3c" }}>{product.price} ₽</span>
+                        Цена: <span style={{ color: "#388e3c" }}> { product.price * product.quantity} ₽</span>
                       </p>
                     </div>
                   </div>
