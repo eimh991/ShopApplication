@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Shop.Attribute;
+using Shop.Enum;
 using Shop.Interfaces;
 using Shop.Model;
 using Shop.Service;
@@ -50,6 +52,7 @@ namespace Shop.Controllers
         }
 
         [HttpDelete("id")]
+        [AuthorizeRole(UserRole.Admin)]
         public async Task<IActionResult> DeleteOrderAsync(int entityId)
         {
              await _orderService.DeleteOrderAsync(entityId);

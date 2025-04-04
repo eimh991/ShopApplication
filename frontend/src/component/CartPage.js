@@ -61,9 +61,17 @@ const CartPage = () => {
       );
 
       if (checkMoneyResponse.data) {
-        // Если средств достаточно, ничего не делаем
-        console.log("Баланс достаточен для покупки.");
-        // Логика дальнейших действий будет добавлена позже
+        const createOrderResponse = await axios.post(
+          `https://localhost:5260/api/Order/CreateOrder?userId=${user.userId}`
+      );
+      if (createOrderResponse.status === 200) {
+        console.log("Заказ успешно создан!");
+        alert("✅ Заказ успешно оформлен!");
+        // Можно добавить логику очистки корзины или редиректа
+      } else {
+        console.error("Ошибка при создании заказа:", createOrderResponse);
+        setErrorMessage("❌ Ошибка при оформлении заказа.");
+    }
       } else {
         // Если средств не хватает
         setErrorMessage("❌ Недостаточно средств на счете. Пополните баланс через любой удобный сервис.");
