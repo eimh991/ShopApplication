@@ -41,6 +41,11 @@ namespace Shop.Service
             return await _orderRepository.GetByIdAsync(userId, entityId);
         }
 
+        public async Task DeleteOrderAsync(int entityId)
+        {
+             await _orderRepository.DeleteAsync(entityId);
+        }
+
         private IEnumerable<OrderItem> ConvertCartItemsToOrderItems(IEnumerable<CartItem> items)
         {
             return items.Select(i => new OrderItem
@@ -60,6 +65,7 @@ namespace Shop.Service
             }
             return allPrice;
         }
-        
+
+       
     }
 }

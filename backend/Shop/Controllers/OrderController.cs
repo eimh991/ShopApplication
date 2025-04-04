@@ -28,7 +28,7 @@ namespace Shop.Controllers
             return BadRequest("У вас нету товаров в корзине, вы не можете создать заказ");
         }
         [HttpGet("id")]
-        public async Task<ActionResult<Order>>GetOrder(int userId, int entityId)
+        public async Task<ActionResult<Order>>GetOrderAsync(int userId, int entityId)
         {
             var order = await _orderService.GetOrderByIdAsync(userId, entityId);
             if(order != null)
@@ -39,7 +39,7 @@ namespace Shop.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<Order>> GetAllOrder(int userId)
+        public async Task<ActionResult<Order>> GetAllOrderAsync(int userId)
         {
             var orders = await _orderService.GetAllOrdersAsync(userId);
             if (orders != null)
@@ -47,6 +47,14 @@ namespace Shop.Controllers
                 return Ok(orders);
             }
             return NotFound(new { Messge = "У вас нету заказов" });
+        }
+
+        [HttpDelete("id")]
+        public async Task<IActionResult> DeleteOrderAsync(int entityId)
+        {
+             await _orderService.DeleteOrderAsync(entityId);
+            return Ok();
+         
         }
     }
 }

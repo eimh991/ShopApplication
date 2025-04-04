@@ -25,7 +25,7 @@ namespace Shop.Repositories
 
         }
 
-        public Task AddRangeAsync(int userId, List<Order> entitys)
+        public Task AddRangeAsync(int userId, List<Order> entities)
         {
             throw new NotImplementedException();
         }
@@ -35,6 +35,8 @@ namespace Shop.Repositories
             await _context.Orders
                 .Where(o=>o.OrderId == entityId)
                 .ExecuteDeleteAsync();
+
+            await _context.SaveChangesAsync();
         }
 
         public  async Task<IEnumerable<Order>> GetAllAsync(int userId)
