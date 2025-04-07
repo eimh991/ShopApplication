@@ -10,6 +10,8 @@ using Shop.Model;
 using Shop.Repositories;
 using Shop.Service;
 using Shop.Service.PaymentService;
+using StackExchange.Redis;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +46,13 @@ builder.Services.AddScoped<IPaymentService>(sp => sp.GetRequiredService<TinkoffP
 var jwtOptions = builder.Configuration.GetSection("JwtOptions").Get<JwtOptions>();
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
 builder.Services.AddApiAuthentication(Options.Create(jwtOptions));
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost:6379"));
+builder.Services.AddScoped<IDatabase>(provider =>
+{
+    var multiplexer = provider.GetRequiredService<IConnectionMultiplexer>();
+    return multiplexer.GetDatabase();
+});
 
 
 builder.Services.AddSwaggerGen(options =>
