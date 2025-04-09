@@ -54,6 +54,11 @@ const Navbar = () => {
                     <li className="nav-item">
                         <Link className="nav-link" to="/cart">Корзина</Link>
                     </li>
+                    {isAuthenticated && (
+                    <li className="nav-item">
+                        <Link className="nav-link" to="/orders">Заказы</Link>
+                    </li>
+                    )}
                     {isAuthenticated ? (
                         <li className="nav-item">
                             <button className="btn btn-link nav-link" onClick={handleLogout}>Выход</button>
