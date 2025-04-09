@@ -7,7 +7,7 @@ import Footer from './Footer';
 import RegistrationPage from './component/RegistrationPage';
 import ProductDetails from './component/ProductDetails';
 import MainPage from './component/MainPage';
-import ProductCard from './component/ProductCard';
+import OrdersPage from './component/OrderPage';
 import AllProductsPage from './component/AllProductsPage';
 import CartPage from './component/CartPage';
 
@@ -25,6 +25,7 @@ const App = () => {
               <Route path="/" element={<MainPage />} />
               <Route path="/product/:id" element={<ProductDetails/>} />
               <Route path="/products" element={<AllProductsPage />} />
+              <Route path="/orders" element={<OrdersPage/>} />
           </Routes>
           <Footer />
       </BrowserRouter>

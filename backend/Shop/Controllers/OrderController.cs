@@ -41,7 +41,7 @@ namespace Shop.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<Order>> GetAllOrderAsync(int userId)
+        public async Task<ActionResult<IEnumerable<Order>>> GetAllOrderAsync(int userId)
         {
             var orders = await _orderService.GetAllOrdersAsync(userId);
             if (orders != null)

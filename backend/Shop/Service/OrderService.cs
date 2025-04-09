@@ -32,34 +32,31 @@ namespace Shop.Service
             await _orderRepository.AddAsync(userId, order);
             await ((CartItemRepository)_cartItemRepository).DeleteAllCartItemsAsync(userId);
 
-            // ⛔ Очистка кэша для этого пользователя
+            //  Очистка кэша для этого пользователя
             await _redisDb.KeyDeleteAsync($"orders_user_{userId}");
         }
 
         public async Task<IEnumerable<Model.Order>> GetAllOrdersAsync(int userId)
         {
-            // Ключ для Redis
             var cacheKey = $"orders_user_{userId}";
 
-            // Пытаемся получить кэшированные данные
             var cachedOrders = await _redisDb.StringGetAsync(cacheKey);
 
             if (!cachedOrders.IsNullOrEmpty)
             {
-                // Если данные есть в кэше, десериализуем их и возвращаем
+               
                 return JsonConvert.DeserializeObject<List<Model.Order>>(cachedOrders);
             }
 
             var ordersFromDb = await _orderRepository.GetAllAsync(userId);
 
-            // Если данные есть, сериализуем и сохраняем в Redis с TTL
+            // Если данные есть, сериализуем и сохраняем в Redis
             if (ordersFromDb != null && ordersFromDb.Any())
             {
-                await _redisDb.StringSetAsync(cacheKey,JsonConvert.SerializeObject(ordersFromDb),TimeSpan.FromMinutes(10)); // Устанавливаем срок жизни кэша (10 минут)
+                await _redisDb.StringSetAsync(cacheKey,JsonConvert.SerializeObject(ordersFromDb),TimeSpan.FromMinutes(10)); 
 
             }
 
-            // Возвращаем данные из базы
             return ordersFromDb ?? Enumerable.Empty<Model.Order>();
 
         }
