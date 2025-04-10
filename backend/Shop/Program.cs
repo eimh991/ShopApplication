@@ -2,15 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using Shop.Data;
 using Shop.Extensions;
 using Shop.Infrastructure;
-using Shop.Interfaces;
-using Shop.Model;
-using Shop.Repositories;
-using Shop.Service;
 using Shop.Service.PaymentService;
-using StackExchange.Redis;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,32 +22,37 @@ builder.Services.AddAuthentication("CustomAuth")
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<AppDbContext>();
+//builder.Services.AddDbContext<AppDbContext>();
 //builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
-builder.Services.AddScoped<IJwtProvider,JwtProvider>();
+//builder.Services.AddScoped<IJwtProvider,JwtProvider>();
 builder.Services.AddHttpClient<QiwiPaymentService>();
 builder.Services.AddHttpClient<TinkoffPaymentService>();
-builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<ICartItemService, CartItemSercive>();
-builder.Services.AddScoped<IRepository<User>, UserRepository>();
-builder.Services.AddScoped<IRepository<Product>, ProductRepository>();
-builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
-builder.Services.AddScoped<IRepositoryWithUser<CartItem>, CartItemRepository>();
-builder.Services.AddScoped<IPaymentService>(sp => sp.GetRequiredService<QiwiPaymentService>());
-builder.Services.AddScoped<IPaymentService>(sp => sp.GetRequiredService<TinkoffPaymentService>());
+//builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+//builder.Services.AddScoped<IUserService, UserService>();
+//builder.Services.AddScoped<IProductService, ProductService>();
+//builder.Services.AddScoped<ICategoryService, CategoryService>();
+//builder.Services.AddScoped<ICartItemService, CartItemSercive>();
+//builder.Services.AddScoped<IOrderService, OrderService>();
+//builder.Services.AddScoped<IRepository<User>, UserRepository>();
+//builder.Services.AddScoped<IRepository<Product>, ProductRepository>();
+//builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
+//builder.Services.AddScoped<IRepositoryWithUser<Model.Order>, OrderRepository>();
+//builder.Services.AddScoped<IRepositoryWithUser<CartItem>, CartItemRepository>();
+
+//builder.Services.AddScoped<IPaymentService>(sp => sp.GetRequiredService<QiwiPaymentService>());
+//builder.Services.AddScoped<IPaymentService>(sp => sp.GetRequiredService<TinkoffPaymentService>());
+builder.Services.AddInfrastucture(builder.Configuration);
 var jwtOptions = builder.Configuration.GetSection("JwtOptions").Get<JwtOptions>();
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
 builder.Services.AddApiAuthentication(Options.Create(jwtOptions));
-
+/*
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost:6379"));
 builder.Services.AddScoped<IDatabase>(provider =>
 {
     var multiplexer = provider.GetRequiredService<IConnectionMultiplexer>();
     return multiplexer.GetDatabase();
 });
+*/
 
 
 builder.Services.AddSwaggerGen(options =>
