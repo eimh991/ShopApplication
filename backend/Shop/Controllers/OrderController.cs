@@ -19,7 +19,7 @@ namespace Shop.Controllers
             _userService = userService;
         }
         [HttpPost]
-        public async Task<IActionResult> CreateOrder(int userId)
+        public async Task<IActionResult> CreateOrder([FromQuery] int userId)
         {
             var items = await ((UserService)_userService).GetUserCartItemsAsync(userId);
             if (items != null &&  items != Enumerable.Empty<CartItem>())

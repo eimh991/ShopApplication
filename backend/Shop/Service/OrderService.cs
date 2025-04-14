@@ -26,7 +26,7 @@ namespace Shop.Service
             var order = new Model.Order
             {
                 OrderItems = orderItems.ToList(),
-                OrderDate = DateTime.Now,
+                OrderDate = DateTime.UtcNow,
                 TotalAmount = AllOrderPrice(orderItems.ToList())
             };
             await _orderRepository.AddAsync(userId, order);
@@ -53,7 +53,7 @@ namespace Shop.Service
             // Если данные есть, сериализуем и сохраняем в Redis
             if (ordersFromDb != null && ordersFromDb.Any())
             {
-                await _redisDb.StringSetAsync(cacheKey,JsonConvert.SerializeObject(ordersFromDb),TimeSpan.FromMinutes(10)); 
+                //await _redisDb.StringSetAsync(cacheKey,JsonConvert.SerializeObject(ordersFromDb),TimeSpan.FromMinutes(10)); 
 
             }
 
@@ -74,12 +74,33 @@ namespace Shop.Service
 
         private IEnumerable<OrderItem> ConvertCartItemsToOrderItems(IEnumerable<CartItem> items)
         {
-            return items.Select(i => new OrderItem
+            if (items == null)
+                throw new ArgumentNullException(nameof(items), "Cart items list is null");
+
+            return items.Select(i =>
             {
-                Product = i.Product,
-                Quantity = i.Quantity,
-                UnitPrice = i.Quantity * i.Product.Price,
+                if (i == null)
+                    throw new NullReferenceException("CartItem is null");
+
+                if (i.Product == null)
+                    throw new NullReferenceException("CartItem.Product is null");
+
+                return new OrderItem
+                {
+                    Product = i.Product,
+                    Quantity = i.Quantity,
+                    UnitPrice = i.Quantity * (i.Product?.Price ?? 0),
+                };
             });
+
+            /*
+             return items.Select(i => new OrderItem
+             {
+                 Product = i.Product,
+                 Quantity = i.Quantity,
+                 UnitPrice = i.Quantity * i.Product.Price,
+             });
+            */
         }
 
         private decimal AllOrderPrice(List<OrderItem> orderItems)

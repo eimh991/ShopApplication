@@ -127,8 +127,9 @@ namespace Shop.Repositories
         public async Task<User> GetUserWithCartsItemAsync(int userId)
         {
             var user = await _context.Users
-                .AsNoTracking()
-                .Include(u => u.Cart.CartItems)
+                .Include(u => u.Cart)
+                   .ThenInclude(c=>c.CartItems)
+                    .ThenInclude(ci=>ci.Product)
                 .FirstOrDefaultAsync(u => u.UserId == userId);
 
             if (user != null)
