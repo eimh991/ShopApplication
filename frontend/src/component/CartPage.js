@@ -60,9 +60,11 @@ const CartPage = () => {
         `https://localhost:5260/api/User/checkmoney?userId=${user.id}&cartCoast=${totalCost}`
       );
 
+      
       if (checkMoneyResponse.data) {
         const createOrderResponse = await axios.post(
-          `https://localhost:5260/api/Order/CreateOrder?userId=${user.userId}`
+          `https://localhost:5260/api/Order?userId=${user.id}`,
+          {}
       );
       if (createOrderResponse.status === 200) {
         console.log("Заказ успешно создан!");
