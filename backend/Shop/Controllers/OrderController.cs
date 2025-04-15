@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shop.Attribute;
+using Shop.DTO;
 using Shop.Enum;
 using Shop.Interfaces;
 using Shop.Model;
@@ -41,12 +42,12 @@ namespace Shop.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetAllOrderAsync(int userId)
+        public async Task<ActionResult<IEnumerable<OrderDTO>>> GetAllOrderAsync(int userId)
         {
-            var orders = await ((OrderService)_orderService).GetAllOrdersDTOAsync(userId);
-            if (orders != null)
+            var ordersDTO = await ((OrderService)_orderService).GetAllOrdersDTOAsync(userId);
+            if (ordersDTO != null)
             {
-                return Ok(orders);
+                return Ok(ordersDTO);
             }
             return NotFound(new { Messge = "У вас нету заказов" });
         }

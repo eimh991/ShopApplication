@@ -124,7 +124,9 @@ namespace Shop.Service
                         OrderId = order.OrderId,
                         orderItemDTOs = order.OrderItems.Select(item => new OrderItemDTO{
                             OrderItemId = item.OrderItemId,
-                            Product = item.Product,
+                            Price = item.Product.Price,
+                            ProductImageUrl = item.Product.ImagePath,
+                            ProductName = item.Product.Name,
                             Quantity = item.Quantity,   
                     
                         }).ToList(),

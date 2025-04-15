@@ -45,6 +45,7 @@ namespace Shop.Repositories
                 return await _context.Orders
                     .AsNoTracking()
                     .Include(o=>o.OrderItems)
+                        .ThenInclude(oi=>oi.Product)
                     .Where(o=>o.UserId == userId)
                     .ToListAsync();
         }
