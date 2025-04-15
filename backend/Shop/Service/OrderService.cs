@@ -3,6 +3,7 @@ using Shop.Model;
 using Shop.Repositories;
 using Newtonsoft.Json;
 using StackExchange.Redis;
+using Shop.DTO;
 
 namespace Shop.Service
 {
@@ -36,7 +37,7 @@ namespace Shop.Service
             await _redisDb.KeyDeleteAsync($"orders_user_{userId}");
         }
 
-        public async Task<IEnumerable<Model.Order>> GetAllOrdersAsync(int userId)
+        public async Task<IEnumerable<OrderDTO>> GetAllOrdersDTOAsync(int userId)
         {
             var cacheKey = $"orders_user_{userId}";
 
@@ -45,19 +46,20 @@ namespace Shop.Service
             if (!cachedOrders.IsNullOrEmpty)
             {
                
-                return JsonConvert.DeserializeObject<List<Model.Order>>(cachedOrders);
+                return JsonConvert.DeserializeObject<List<OrderDTO>>(cachedOrders);
             }
 
             var ordersFromDb = await _orderRepository.GetAllAsync(userId);
+            var orderDTO = ConverOrderToOrderDTO(ordersFromDb);
 
             // Если данные есть, сериализуем и сохраняем в Redis
-            if (ordersFromDb != null && ordersFromDb.Any())
+            if (orderDTO != null && orderDTO.Any())
             {
-                //await _redisDb.StringSetAsync(cacheKey,JsonConvert.SerializeObject(ordersFromDb),TimeSpan.FromMinutes(10)); 
+                
+                await _redisDb.StringSetAsync(cacheKey,JsonConvert.SerializeObject(orderDTO),TimeSpan.FromMinutes(10)); 
 
             }
-
-            return ordersFromDb ?? Enumerable.Empty<Model.Order>();
+            return orderDTO ?? Enumerable.Empty<OrderDTO>();
 
         }
 
@@ -113,5 +115,28 @@ namespace Shop.Service
             return allPrice;
         }
 
+        private IEnumerable<OrderDTO> ConverOrderToOrderDTO(IEnumerable<Model.Order> order)
+        {
+           var orderDTO = order.Select(order => new OrderDTO
+                {
+                        OrderDate = order.OrderDate,
+                        TotalAmount = order.TotalAmount,
+                        OrderId = order.OrderId,
+                        orderItemDTOs = order.OrderItems.Select(item => new OrderItemDTO{
+                            OrderItemId = item.OrderItemId,
+                            Product = item.Product,
+                            Quantity = item.Quantity,   
+                    
+                        }).ToList(),
+                    }).ToList();
+
+            return orderDTO;
+                    
+        }
+
+        Task<IEnumerable<Model.Order>> IOrderService.GetAllOrdersAsync(int userId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
