@@ -50,7 +50,7 @@ namespace Shop.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteAsync(int productId)
+        public async Task<IActionResult> DeleteProductAsync(int productId)
         {
             await _productService.DeleteAsync(productId);
 
