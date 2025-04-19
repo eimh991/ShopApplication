@@ -11,13 +11,13 @@ namespace Shop.Service
     {
 
         private readonly IRepositoryWithUser<Model.Order> _orderRepository;
-        private readonly IRepositoryWithUser<CartItem> _cartItemRepository;
+        private readonly ICartItemCleaner _cartCleaner;
         private readonly IDatabase _redisDb;
 
-        public OrderService(IRepositoryWithUser<Model.Order> orderRepository,IRepositoryWithUser<CartItem> cartItemRepository, IDatabase redisDb)
+        public OrderService(IRepositoryWithUser<Model.Order> orderRepository, ICartItemCleaner cartCleaner, IDatabase redisDb)
         {
             _orderRepository = orderRepository;
-            _cartItemRepository = cartItemRepository;
+            _cartCleaner = cartCleaner;
             _redisDb = redisDb;
         }
 
@@ -31,15 +31,15 @@ namespace Shop.Service
                 TotalAmount = AllOrderPrice(orderItems.ToList())
             };
             await _orderRepository.AddAsync(userId, order);
-            await ((CartItemRepository)_cartItemRepository).DeleteAllCartItemsAsync(userId);
+            await _cartCleaner.DeleteAllCartItemsAsync(userId);
 
             //  Очистка кэша для этого пользователя
-            await _redisDb.KeyDeleteAsync($"orders_user_{userId}");
+            await _redisDb.KeyDeleteAsync($"order_user_{userId}", CommandFlags.None);
         }
 
         public async Task<IEnumerable<OrderDTO>> GetAllOrdersDTOAsync(int userId)
         {
-            var cacheKey = $"orders_user_{userId}";
+            var cacheKey = $"order_user_{userId}";
 
             var cachedOrders = await _redisDb.StringGetAsync(cacheKey);
 

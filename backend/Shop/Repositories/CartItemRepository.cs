@@ -7,7 +7,7 @@ using Shop.Model;
 
 namespace Shop.Repositories
 {
-    public class CartItemRepository : IRepositoryWithUser<CartItem>
+    public class CartItemRepository : IRepositoryWithUser<CartItem>, ICartItemCleaner
     {
         private readonly AppDbContext _context;
         public CartItemRepository(AppDbContext context)

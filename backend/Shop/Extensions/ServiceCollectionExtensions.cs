@@ -34,12 +34,14 @@ namespace Shop.Extensions
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ICartItemService, CartItemSercive>();
             services.AddScoped<IOrderService, OrderService>();
+            
 
             services.AddScoped<IRepository<User>, UserRepository>();
             services.AddScoped<IRepository<Product>, ProductRepository>();
             services.AddScoped<IRepository<Category>, CategoryRepository>();
             services.AddScoped<IRepositoryWithUser<CartItem>, CartItemRepository>();
             services.AddScoped<IRepositoryWithUser<Shop.Model.Order>, OrderRepository>();
+            services.AddScoped<ICartItemCleaner, CartItemRepository>();
 
             services.AddHttpClient<QiwiPaymentService>();
             services.AddHttpClient<TinkoffPaymentService>();
