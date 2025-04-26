@@ -3,51 +3,151 @@ using Shop.Interfaces;
 using Shop.Model;
 using Shop.Service;
 using StackExchange.Redis;
+using System.Text.Json;
 using Xunit;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+
 
 namespace Shop.Tests.Service
 {
     public class OrderServiceTests
     {
+        private readonly Mock<IRepositoryWithUser<Model.Order>> _mockOrderRepo;
+        private readonly Mock<ICartItemCleaner> _mockCartItemCleanerRepo;
+        private readonly Mock<StackExchange.Redis.IDatabase> _mockRedisDb;
+        private readonly OrderService _orderService;
+
+        public OrderServiceTests()
+        {
+            _mockOrderRepo = new Mock<IRepositoryWithUser<Model.Order>>();
+            _mockCartItemCleanerRepo = new Mock<ICartItemCleaner>();
+            _mockRedisDb = new Mock<IDatabase>();
+
+            _orderService = new OrderService(
+                _mockOrderRepo.Object,
+                _mockCartItemCleanerRepo.Object,
+                _mockRedisDb.Object
+             );
+            
+
+        }
+
+        private List<CartItem> GetSampleCartItems() {
+            {
+                return new List<CartItem>()
+                {
+                    new CartItem
+                    {
+                        Quantity = 2,
+                        Product = new Product
+                        {
+                            ProductId = 1,
+                            Name = "Sample Product",
+                            Price = 15.5m,
+                            ImagePath = "default.jpg"
+                        }
+                    }
+
+                };
+               
+            };
+        }
+        private List<Model.Order> GetSampleOrders()
+        {
+            return new List<Model.Order> {
+
+                new Model.Order
+                {
+                    OrderId = 1,
+                    OrderDate = DateTime.UtcNow,
+                    TotalAmount = 100m,
+                    UserId = 1
+                }
+            };
+             
+        }
+
+
         [Fact]
         public async Task CreateOrderAsync_Should_SaveOrder_And_DeleteCart_AndClearCache()
         {
             //Arrange
-            var mockOrderRepo = new Mock<IRepositoryWithUser<Model.Order>>();
-            var mockCartRepo = new Mock<ICartItemCleaner>();
-            var mockRedisDb = new Mock<StackExchange.Redis.IDatabase>();
-
             var userId = 1;
-            var cartItems = new List<CartItem>()
-            {
-                new CartItem
-                {
-                    Quantity = 2,
-                    Product = new Product
-                    {
-                        Name = "Test Product",
-                        Price = 10m,
-                    }
-                }
-            };
-            
-            // Настроим моки так, чтобы они не выбрасывали исключения
-            mockOrderRepo.Setup(r => r.AddAsync(userId, It.IsAny<Model.Order>())).Returns(Task.CompletedTask);
-            mockCartRepo.Setup(r => r.DeleteAllCartItemsAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
-            mockRedisDb.Setup(db => db.KeyDeleteAsync(It.Is<RedisKey>(key => key == new RedisKey($"order_user_{userId}")), CommandFlags.None))
-                .Returns(Task.FromResult(true)); // Возвращаем Task<bool> с результатом true
+            var cartItems = GetSampleCartItems();
 
-            var orderService = new OrderService(mockOrderRepo.Object, mockCartRepo.Object, mockRedisDb.Object);
+
+
+            // Настроим моки так, чтобы они не выбрасывали исключения
+            _mockOrderRepo.Setup(r => r.AddAsync(userId, It.IsAny<Model.Order>())).Returns(Task.CompletedTask);
+            _mockCartItemCleanerRepo.Setup(r => r.DeleteAllCartItemsAsync(userId)).Returns(Task.CompletedTask);
+            _mockRedisDb.Setup(db => db.KeyDeleteAsync(
+                It.Is<RedisKey>(key => key.ToString() == $"order_user_{userId}"), CommandFlags.None))
+                .ReturnsAsync(true); 
 
             // Act
-            await orderService.CreateOrderAsync(userId, cartItems);
+            await _orderService.CreateOrderAsync(userId, cartItems);
 
             // Assert
-            mockOrderRepo.Verify(r => r.AddAsync(userId, It.IsAny<Model.Order>()), Times.Once());
-            mockCartRepo.Verify(r => r.DeleteAllCartItemsAsync(userId), Times.Once());
-            mockRedisDb.Verify(db => db.KeyDeleteAsync(new RedisKey($"order_user_{userId}"), CommandFlags.None), Times.Once);
+            _mockOrderRepo.Verify(r => r.AddAsync(userId, It.IsAny<Model.Order>()), Times.Once());
+            _mockCartItemCleanerRepo.Verify(r => r.DeleteAllCartItemsAsync(userId), Times.Once());
+            _mockRedisDb.Verify(db => db.KeyDeleteAsync(It.IsAny<RedisKey>(), CommandFlags.None), Times.Once);
         }
+
+        [Fact]
+        public async Task GetAllOrdersDTOAsync_Should_ReturnOrders_FromCache_When_CacheExist()
+        {
+            //Arrange
+            var userId = 1;
+            var orders = GetSampleOrders();
+            var  serializeOrders = JsonSerializer.Serialize(orders);
+
+            _mockRedisDb.Setup(db=> db.StringGetAsync(
+                    It.IsAny<RedisKey>(),CommandFlags.None))
+                .ReturnsAsync(serializeOrders);
+
+            //Act
+            var result = await _orderService.GetAllOrdersDTOAsync(userId);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.Single(result);
+            Assert.Equal(orders[0].OrderId, result.ToList()[0].OrderId); 
+        }
+
+        [Fact]
+        public async Task GetOrderByIdAsync_Should_ReturnOrder_When_OrderExists()
+        {
+            //Arrange
+            var userId = 1;
+            var orderId = 1;
+            var order = GetSampleOrders().FirstOrDefault();
+
+            _mockOrderRepo.Setup(r=>r.GetByIdAsync(userId, orderId))
+                    .ReturnsAsync(order);
+
+            //Act
+            var result = await _orderService.GetOrderByIdAsync(userId,orderId);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.Equal(order.OrderId, result.OrderId);
+        }
+
+        [Fact]
+        public async Task DeleteOrderAsync_Should_DeleteOrder_AndClearCache()
+        {
+            //Arrange
+            var orderId = 1;
+
+            _mockOrderRepo.Setup(r=>r.DeleteAsync(orderId))
+                .Returns(Task.CompletedTask);
+
+            //Act
+            await _orderService.DeleteOrderAsync(orderId);
+
+            //Assert
+            _mockOrderRepo.Verify(r=>r.DeleteAsync(orderId), Times.Once());            
+        }
+        
+
     }
 }
