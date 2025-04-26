@@ -13,18 +13,24 @@ namespace Shop.Tests.Service
     {
         private readonly Mock<IRepositoryWithUser<Model.Order>> _mockOrderRepo;
         private readonly Mock<ICartItemCleaner> _mockCartItemCleanerRepo;
+        private readonly Mock<IRepository<User>> _mockUserRepo;
+        private readonly Mock<IUserBalanceUpdater> _mockUserBalanceUpdater;
         private readonly Mock<StackExchange.Redis.IDatabase> _mockRedisDb;
         private readonly OrderService _orderService;
 
         public OrderServiceTests()
         {
             _mockOrderRepo = new Mock<IRepositoryWithUser<Model.Order>>();
+            _mockUserRepo = new Mock<IRepository<User>>();
             _mockCartItemCleanerRepo = new Mock<ICartItemCleaner>();
+            _mockUserBalanceUpdater = new Mock<IUserBalanceUpdater>();
             _mockRedisDb = new Mock<IDatabase>();
 
             _orderService = new OrderService(
                 _mockOrderRepo.Object,
                 _mockCartItemCleanerRepo.Object,
+                _mockUserRepo.Object,
+                _mockUserBalanceUpdater.Object,
                 _mockRedisDb.Object
              );
             
@@ -73,12 +79,13 @@ namespace Shop.Tests.Service
             //Arrange
             var userId = 1;
             var cartItems = GetSampleCartItems();
+            var user = new User { UserId = userId, Balance = 1000 };
 
 
-
-            // Настроим моки так, чтобы они не выбрасывали исключения
+            _mockUserRepo.Setup(r=>r.GetByIdAsync(userId)).ReturnsAsync(user);
             _mockOrderRepo.Setup(r => r.AddAsync(userId, It.IsAny<Model.Order>())).Returns(Task.CompletedTask);
             _mockCartItemCleanerRepo.Setup(r => r.DeleteAllCartItemsAsync(userId)).Returns(Task.CompletedTask);
+            _mockUserBalanceUpdater.Setup(u=>u.UpdateBalanceAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
             _mockRedisDb.Setup(db => db.KeyDeleteAsync(
                 It.Is<RedisKey>(key => key.ToString() == $"order_user_{userId}"), CommandFlags.None))
                 .ReturnsAsync(true); 
@@ -87,8 +94,10 @@ namespace Shop.Tests.Service
             await _orderService.CreateOrderAsync(userId, cartItems);
 
             // Assert
+            _mockUserRepo.Verify(r=>r.GetByIdAsync(userId), Times.Once);
             _mockOrderRepo.Verify(r => r.AddAsync(userId, It.IsAny<Model.Order>()), Times.Once());
             _mockCartItemCleanerRepo.Verify(r => r.DeleteAllCartItemsAsync(userId), Times.Once());
+            _mockUserBalanceUpdater.Verify(u => u.UpdateBalanceAsync(It.Is<User>(u => u.UserId == userId)), Times.Once());
             _mockRedisDb.Verify(db => db.KeyDeleteAsync(It.IsAny<RedisKey>(), CommandFlags.None), Times.Once);
         }
 

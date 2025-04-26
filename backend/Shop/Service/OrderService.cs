@@ -11,13 +11,18 @@ namespace Shop.Service
     {
 
         private readonly IRepositoryWithUser<Model.Order> _orderRepository;
+        private readonly IRepository<User> _userRepository;
         private readonly ICartItemCleaner _cartCleaner;
+        private readonly IUserBalanceUpdater _userBalanceUpdater;
         private readonly IDatabase _redisDb;
 
-        public OrderService(IRepositoryWithUser<Model.Order> orderRepository, ICartItemCleaner cartCleaner, IDatabase redisDb)
+        public OrderService(IRepositoryWithUser<Model.Order> orderRepository, ICartItemCleaner cartCleaner,
+            IRepository<User> userRepository, IUserBalanceUpdater userBalanceUpdater,IDatabase redisDb)
         {
             _orderRepository = orderRepository;
             _cartCleaner = cartCleaner;
+            _userBalanceUpdater= userBalanceUpdater;    
+            _userRepository = userRepository;
             _redisDb = redisDb;
         }
 
@@ -30,7 +35,21 @@ namespace Shop.Service
                 OrderDate = DateTime.UtcNow,
                 TotalAmount = AllOrderPrice(orderItems.ToList())
             };
+            
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                throw new InvalidOperationException($"Пользователь с id {userId} не найден.");
+            }
+            if (user.Balance < order.TotalAmount)
+            {
+                throw new InvalidOperationException("Недостаточно средств для оформления заказа.");
+            }
             await _orderRepository.AddAsync(userId, order);
+            user.Balance -= order.TotalAmount;
+            
+            await _userBalanceUpdater.UpdateBalanceAsync(user);
+
             await _cartCleaner.DeleteAllCartItemsAsync(userId);
 
             //  Очистка кэша для этого пользователя

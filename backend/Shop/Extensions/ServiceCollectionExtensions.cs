@@ -42,6 +42,7 @@ namespace Shop.Extensions
             services.AddScoped<IRepositoryWithUser<CartItem>, CartItemRepository>();
             services.AddScoped<IRepositoryWithUser<Shop.Model.Order>, OrderRepository>();
             services.AddScoped<ICartItemCleaner, CartItemRepository>();
+            services.AddScoped<IUserBalanceUpdater,UserRepository>();
 
             services.AddHttpClient<QiwiPaymentService>();
             services.AddHttpClient<TinkoffPaymentService>();

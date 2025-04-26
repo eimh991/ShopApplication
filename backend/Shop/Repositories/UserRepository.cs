@@ -8,7 +8,7 @@ using Shop.Model;
 
 namespace Shop.Repositories
 {
-    public class UserRepository : IRepository<User>
+    public class UserRepository : IRepository<User>, IUserBalanceUpdater
     {
         private readonly AppDbContext _context;
         public UserRepository(AppDbContext context)
@@ -122,6 +122,16 @@ namespace Shop.Repositories
                 return user;
             }
             return null;
+        }
+
+        public async Task UpdateBalanceAsync(User entity)
+        {
+            await _context.Users
+                .Where(u => u.UserId == entity.UserId)
+                .ExecuteUpdateAsync(s => s
+                    .SetProperty(u => u.Balance, entity.Balance)
+                );
+
         }
 
         public async Task<User> GetUserWithCartsItemAsync(int userId)
