@@ -11,23 +11,27 @@ namespace Shop.Service
         private readonly IRepository<User> _userRepository;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtProvider _jwtProvider;
+        private readonly IUserAdditionalRepository _userAdditionalRepository;
         public UserService(IRepository<User> userRepository,
                             IPasswordHasher passwordHasher,
-                            IJwtProvider jwtProvider) {
+                            IJwtProvider jwtProvider,
+                            IUserAdditionalRepository userAdditionalRepository)
+        {
 
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _jwtProvider = jwtProvider;
+            _userAdditionalRepository = userAdditionalRepository;
         }
 
         public async Task ChangeStatusAsync(int userId,string status)
         {
             if (!string.IsNullOrEmpty(status)
                 && status.ToLower() == UserRole.Manager.ToString().ToLower()
-                && status.ToLower() == UserRole.Admin.ToString().ToLower())
+                || status.ToLower() == UserRole.Admin.ToString().ToLower())
             {
 
-                await ((UserRepository)_userRepository).ChangeStatusAsync(userId,status);
+                await _userAdditionalRepository.ChangeStatusAsync(userId,status);
 
             }
         }
@@ -58,7 +62,7 @@ namespace Shop.Service
 
         public async Task<User> GetByEmaiAsync(string email)
         {
-             return await ((UserRepository)_userRepository).GetByEmailAsync(email);
+             return await _userAdditionalRepository.GetByEmailAsync(email);
         }
 
         public async Task<User> GetByIdAsync(int id)
@@ -83,9 +87,9 @@ namespace Shop.Service
             return _passwordHasher.Generate(password);  
         }
 
-        public async Task<string> Login (string email ,string password)
+        public async Task<string> Login(string email ,string password)
         {
-            var user = await ((UserRepository)_userRepository).GetByEmailAsync(email);
+            var user = await _userAdditionalRepository.GetByEmailAsync(email);
             if (user != null)
             {
                 var result = _passwordHasher.Verify(password, user.PasswordHash);
@@ -103,7 +107,7 @@ namespace Shop.Service
 
         public async Task<IEnumerable<CartItem>> GetUserCartItemsAsync(int userId)
         {
-            var user = await ((UserRepository)_userRepository).GetUserWithCartsItemAsync(userId);
+            var user = await _userAdditionalRepository.GetUserWithCartsItemAsync(userId);
             if (user != null)
             {
                 return user.Cart.CartItems;

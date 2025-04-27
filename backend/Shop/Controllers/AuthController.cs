@@ -25,7 +25,7 @@ namespace Shop.Controllers
             */
             Console.WriteLine("Авторизация: " + loginUserDTO.Email);
 
-            var token = await ((UserService)_userService).Login(loginUserDTO.Email, loginUserDTO.Password);
+            var token = await _userService.Login(loginUserDTO.Email, loginUserDTO.Password);
 
             HttpContext.Response.Cookies.Append("test-cookie", token, new CookieOptions
             {

@@ -12,5 +12,7 @@ namespace Shop.Interfaces
         Task DeleteAsync(int id);
         Task<User> GetByEmaiAsync(string email);
         Task ChangeStatusAsync ( int userId , string status);
+
+        Task<string> Login(string email, string password);
     }
 }

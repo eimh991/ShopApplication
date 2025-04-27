@@ -8,7 +8,7 @@ using Shop.Model;
 
 namespace Shop.Repositories
 {
-    public class UserRepository : IRepository<User>, IUserBalanceUpdater
+    public class UserRepository : IRepository<User>, IUserBalanceUpdater, IUserAdditionalRepository
     {
         private readonly AppDbContext _context;
         public UserRepository(AppDbContext context)
