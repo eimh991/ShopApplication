@@ -47,7 +47,7 @@ namespace Shop.Tests.Service
                 PasswordHash = passwordHash,
             };
 
-            _mockUserAdditionalRepository.Setup(repo=> repo.GetByEmailAsync(email))
+            _mockUserAdditionalRepository.Setup(repo => repo.GetByEmailAsync(email))
                 .ReturnsAsync(user);
 
             _mockPasswordHasher.Setup(hasher => hasher.Verify(password, passwordHash))
@@ -65,7 +65,7 @@ namespace Shop.Tests.Service
         }
 
         [Fact]
-        public async Task Login_Should_ThrowException_When_UserNotFound()
+        public async Task Login_Should_ThrowException_When_PaawordIsIncorrect()
         {
             //Arrange
             var email = "test@example.com";
@@ -83,9 +83,23 @@ namespace Shop.Tests.Service
                 .Returns(false);
 
             //Act/Assert
-            var exception = await Assert.ThrowsAsync<Exception>(() => _userService.Login(email,password));
+            var exception = await Assert.ThrowsAsync<Exception>(() => _userService.Login(email, password));
             Assert.Equal("Некорректный логин или пароль", exception.Message);
         }
+        [Fact]
+        public async Task Login_Should_ThrowException_When_UserNotFound()
+        {
+            //Arrange
+            var email = "nonexisten@example.com";
+            var password = "password";
 
+            _mockUserAdditionalRepository.Setup(r => r.GetByEmailAsync(email))
+                .ReturnsAsync((User)null);
+
+            //Act & Assert
+            var exception = await Assert.ThrowsAsync<Exception>(()=> _userService.Login(email, password));
+            Assert.Equal("Нет такого пользователя", exception.Message);
+
+        }
     }
 }
