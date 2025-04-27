@@ -95,7 +95,7 @@ namespace Shop.Service
                 var result = _passwordHasher.Verify(password, user.PasswordHash);
                 if (result == false)
                 {
-                    throw new Exception("Некоректный логин или пароль");
+                    throw new Exception("Некорректный логин или пароль");
                 }
 
                 var token = _jwtProvider.GenerateToken(user);

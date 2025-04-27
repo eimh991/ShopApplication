@@ -64,5 +64,28 @@ namespace Shop.Tests.Service
             Assert.Equal("mocked-jwt-token", token);
         }
 
+        [Fact]
+        public async Task Login_Should_ThrowException_When_UserNotFound()
+        {
+            //Arrange
+            var email = "test@example.com";
+            var password = "wrongpassword";
+            var user = new User
+            {
+                Email = email,
+                PasswordHash = "hashepassword"
+            };
+
+            _mockUserAdditionalRepository.Setup(repo => repo.GetByEmailAsync(email))
+                .ReturnsAsync(user);
+
+            _mockPasswordHasher.Setup(hasher => hasher.Verify(password, user.PasswordHash))
+                .Returns(false);
+
+            //Act/Assert
+            var exception = await Assert.ThrowsAsync<Exception>(() => _userService.Login(email,password));
+            Assert.Equal("Некорректный логин или пароль", exception.Message);
+        }
+
     }
 }
