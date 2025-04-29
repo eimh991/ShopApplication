@@ -211,5 +211,113 @@ namespace Shop.Tests.Service
             //Assert
             Assert.Null(result);
         }
+
+        [Fact]
+        public async Task GetByEmaiAsync_Should_ReturnUser_When_UserExists()
+        {
+            //Arrange
+            var email = "test@example.com";
+            var user = new User()
+            {
+                Email = email,
+                UserName = "New user"
+            };
+
+            _mockUserAdditionalRepository.Setup(r=>r.GetByEmailAsync(email)).ReturnsAsync(user);
+
+            //Act 
+            var result = await _userService.GetByEmaiAsync(email);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.Equal(email, result.Email);
+        }
+
+        [Fact]
+        public async Task GetByEmaiAsync_Should_ReturnNull_When_UserDoesNotExist()
+        {
+            //Arrange
+            var email = "noneexist@example.com";
+
+            _mockUserAdditionalRepository.Setup(r => r.GetByEmailAsync(email))
+                .ReturnsAsync((User)null);
+
+            //Act
+            var result = await _userService.GetByEmaiAsync(email);
+
+            //Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_Should_UpdateUser()
+        {
+            // Arrange
+            var userDto = new UserDTO 
+            {
+                UserId = 1,
+                UserName = "Updated User",
+                Email = "updated@example.com",
+                Password = "newpassword123"
+            };
+
+            _mockUserRepository.Setup(r => r.UpdateAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
+
+            // Act
+            await _userService.UpdateAsync(userDto);
+
+            // Assert
+            _mockUserRepository.Verify(r => r.UpdateAsync(It.IsAny<User>()), Times.Once());
+        }
+
+        [Fact]
+        public async Task GetUserCartItemsAsync_Should_ReturnCartItems_When_UserExists()
+        {
+            // Arrange
+            var userId = 1;
+            var cartItems = new List<CartItem> 
+            { new CartItem 
+                { 
+                    ProductId = 1, 
+                    Quantity = 2 
+                }
+            };
+
+            var user = new User
+            {
+                UserId = userId,
+                Cart = new Cart
+                {
+                    CartItems = cartItems
+                }
+            };
+
+            _mockUserAdditionalRepository.Setup(r=>r.GetUserWithCartsItemAsync(userId))
+                .ReturnsAsync(user);
+
+            //Act
+            var result = await _userService.GetUserCartItemsAsync(userId);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.Equal(cartItems.Count, result.Count());
+        }
+
+        [Fact]
+        public async Task GetUserCartItemsAsync_Should_ReturnEmpty_When_UserDoesNotExist()
+        {
+            // Arrange
+            var userId = 1;
+            _mockUserAdditionalRepository.Setup(r => r.GetUserWithCartsItemAsync(userId))
+                    .ReturnsAsync((User)null);
+
+            // Act
+            var result = await _userService.GetUserCartItemsAsync(userId);
+
+            // Assert
+            Assert.Empty(result);
+        }
+
+
     }
 }

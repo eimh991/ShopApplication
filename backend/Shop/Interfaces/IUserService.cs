@@ -14,5 +14,6 @@ namespace Shop.Interfaces
         Task ChangeStatusAsync ( int userId , string status);
 
         Task<string> Login(string email, string password);
+        Task<IEnumerable<CartItem>> GetUserCartItemsAsync(int userId);
     }
 }
