@@ -2,7 +2,7 @@
 using Shop.Interfaces;
 using Shop.Model;
 using Shop.Repositories;
-using System.Xml.Linq;
+
 
 namespace Shop.Service
 {
@@ -11,18 +11,26 @@ namespace Shop.Service
         private readonly IRepositoryWithUser<CartItem> _cartItemRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IRepository<Product> _productRepository;
+        private readonly IUserAdditionalRepository _additionalRepository;
+        private readonly ICartItemCleaner _cartItemCleaner;
+        private readonly ICartItemExtendedRepository _cartItemExtendedRepository;
 
-        public CartItemSercive(IRepositoryWithUser<CartItem> cartItemRepository, IRepository<User> userRepository, IRepository<Product> productRepository)
+        public CartItemSercive(IRepositoryWithUser<CartItem> cartItemRepository, IRepository<User> userRepository, 
+            IRepository<Product> productRepository, IUserAdditionalRepository additionalRepository, 
+            ICartItemCleaner cartItemCleaner, ICartItemExtendedRepository cartItemExtendedRepository)
         {
             
             _cartItemRepository = cartItemRepository;
             _userRepository = userRepository;
             _productRepository = productRepository;
+            _additionalRepository = additionalRepository;
+            _cartItemCleaner = cartItemCleaner;
+            _cartItemExtendedRepository = cartItemExtendedRepository;
         }
 
         public async Task ClearAllCartItemsAsync(int userId)
         {
-           await ((CartItemRepository)_cartItemRepository).DeleteAllCartItemsAsync(userId);
+           await _cartItemCleaner.DeleteAllCartItemsAsync(userId);
         }
 
         public async Task<int> CreateCartItemAsync(CartItemDTO cartItemDTO)
@@ -47,7 +55,7 @@ namespace Shop.Service
                 },*/
             };
 
-           var carItemId =  await ((CartItemRepository)_cartItemRepository).AddAsyncAndReturnCartItemId(userId, cartItem);
+           var carItemId =  await _cartItemExtendedRepository.AddAsyncAndReturnCartItemId(userId, cartItem);
             return carItemId;
         }
 
@@ -79,22 +87,22 @@ namespace Shop.Service
         {
             var cartItem = new CartItem { CartItemId = cartItemId, Quantity = quantity };
 
-            await ((CartItemRepository)_cartItemRepository).UpdateAsync(cartItem);
+            await _cartItemExtendedRepository.UpdateQuantityAsync(cartItem);
         }
 
         public async Task<IEnumerable<CartProductDTO>> GetAllCartProductAsync(int userId)
         {
-            var cartProduct  = await ((CartItemRepository)_cartItemRepository).GetAllCartProductAsync(userId);
+            var cartProduct  = await _cartItemExtendedRepository.GetAllCartProductAsync(userId);
 
             return cartProduct;
         }
 
         private async Task<Cart> GetUserCartAsync(int userId) {
-            var user = await ((UserRepository)_userRepository).GetUserWithCartAsync(userId);
+            var user = await _additionalRepository.GetUserWithCartAsync(userId);
             if(user != null) {
                 return user.Cart;
             }
-            throw new Exception(message: "Не удаеться положить товар в корхину");
+            throw new Exception(message: "Не удаётся положить товар в корзину");
 
         }
     }

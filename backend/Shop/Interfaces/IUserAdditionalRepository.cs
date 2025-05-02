@@ -8,5 +8,7 @@ namespace Shop.Interfaces
         Task<User> GetUserWithCartsItemAsync(int userId);
 
         Task ChangeStatusAsync(int userId, string status);
+
+        Task<User> GetUserWithCartAsync(int userId);
     }
 }

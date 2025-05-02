@@ -7,7 +7,7 @@ using Shop.Model;
 
 namespace Shop.Repositories
 {
-    public class CartItemRepository : IRepositoryWithUser<CartItem>, ICartItemCleaner
+    public class CartItemRepository : IRepositoryWithUser<CartItem>, ICartItemCleaner, ICartItemExtendedRepository
     {
         private readonly AppDbContext _context;
         public CartItemRepository(AppDbContext context)
@@ -78,7 +78,7 @@ namespace Shop.Repositories
 
         }
 
-        public async Task UpdateAsync(CartItem entity)
+        public async Task UpdateQuantityAsync(CartItem entity)
         {
 
             var cartItem = await _context.CartItems
