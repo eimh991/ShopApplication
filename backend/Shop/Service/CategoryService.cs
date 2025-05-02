@@ -1,16 +1,17 @@
 ﻿using Shop.DTO;
 using Shop.Interfaces;
 using Shop.Model;
-using Shop.Repositories;
 
 namespace Shop.Service
 {
     public class CategoryService : ICategoryService
     {
         private readonly IRepository<Category> _categoryRepository;
-        public CategoryService(IRepository<Category> categoryRepository)
+        private readonly ICategoryRepository _categoryRepoFindTitle;
+        public CategoryService(IRepository<Category> categoryRepository, ICategoryRepository categoryRepoFindTitle)
         {
             _categoryRepository = categoryRepository;
+            _categoryRepoFindTitle = categoryRepoFindTitle;
         }
         public async Task CreateAsync(CategoryDTO entity)
         {
@@ -39,7 +40,7 @@ namespace Shop.Service
 
         public async Task<Category> GetByTitleAsync(string name)
         {
-            return await ((CategoryRepository)_categoryRepository).FindByCategoryTitlleAsync(name);
+            return await _categoryRepoFindTitle.FindByCategoryTitleAsync(name);
         }
 
         private Category ConvertCategoryDTOToCAtegoty(CategoryDTO categoryDTO)

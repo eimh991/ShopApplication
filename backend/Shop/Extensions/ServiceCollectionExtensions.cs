@@ -39,6 +39,7 @@ namespace Shop.Extensions
             services.AddScoped<IRepository<User>, UserRepository>();
             services.AddScoped<IRepository<Product>, ProductRepository>();
             services.AddScoped<IRepository<Category>, CategoryRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IRepositoryWithUser<CartItem>, CartItemRepository>();
             services.AddScoped<IRepositoryWithUser<Shop.Model.Order>, OrderRepository>();
             services.AddScoped<ICartItemCleaner, CartItemRepository>();

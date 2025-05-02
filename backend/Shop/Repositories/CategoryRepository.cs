@@ -6,7 +6,7 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace Shop.Repositories
 {
-    public class CategoryRepository : IRepository<Category>
+    public class CategoryRepository : IRepository<Category>, ICategoryRepository
     {
         private readonly AppDbContext _context;
         public CategoryRepository(AppDbContext context)
@@ -53,12 +53,13 @@ namespace Shop.Repositories
                 );
         }
         
-        public async Task<Category> FindByCategoryTitlleAsync(string title)
+        public async Task<Category?> FindByCategoryTitleAsync(string title)
         {
+            string normalizedTitle = title.ToLower();
+
             return await _context.Categories
-                     .FirstOrDefaultAsync(c => 
-                     c.CategoryName.ToLower() == title.ToLower())
-                     ?? null;
+                     .FirstOrDefaultAsync(c =>
+                     c.CategoryName.ToLower() == normalizedTitle);
         }
     }
 }

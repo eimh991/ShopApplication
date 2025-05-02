@@ -8,15 +8,15 @@ namespace Shop.Service
     public class ProductService : IProductService
     {
         private readonly IRepository<Product> _productRepository;
-        private readonly IRepository<Category> _categoryRepository;
-        public ProductService(IRepository<Product> productRepository, IRepository<Category> categoryRepository)
+        private readonly ICategoryRepository _categoryRepo;
+        public ProductService(IRepository<Product> productRepository, ICategoryRepository categoryRepo)
         {
             _productRepository = productRepository;
-            _categoryRepository = categoryRepository;
+            _categoryRepo = categoryRepo;
         }
         public async Task CreateAsync(ProductRequestDTO entity)
         {
-            var category =  await ((CategoryRepository)_categoryRepository).FindByCategoryTitlleAsync(entity.CategoryTitle);
+            var category =  await _categoryRepo.FindByCategoryTitleAsync(entity.CategoryTitle);
 
             string imagePaath = GenerateImagePath(entity.Image).Result;
 
@@ -56,7 +56,7 @@ namespace Shop.Service
 
         public async Task UpdateAsync(ProductRequestDTO entity)
         {
-            var category = await ((CategoryRepository)_categoryRepository).FindByCategoryTitlleAsync(entity.CategoryTitle);
+            var category = await _categoryRepo.FindByCategoryTitleAsync(entity.CategoryTitle);
             string imagePaath = GenerateImagePath(entity.Image).Result;
             Product product = new Product
             {
