@@ -35,18 +35,19 @@ namespace Shop.Controllers
             {
                 return Ok(product);
             }
-            return NotFound(new { Messge = "Такого продукта нету" });
+            return NotFound(new { Message = "Такого продукта нету" });
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ProductResponceDTO>>> GetProductsAsync(string search = "", int paginateSize = 9, int page = 1, string sortOrder = "")
+        public async Task<ActionResult<List<ProductResponceDTO>>> GetProductsAsync(string search = "", 
+            int paginateSize = 9, int page = 1, string sortOrder = "", string categoryName = "")
         {
-            var products = await _productService.GetAllAsync(search, paginateSize,page,sortOrder);
-            if (products != null)
+            var products = await _productService.GetAllAsync(search, paginateSize,page,sortOrder, categoryName);
+            if (!products.Any())
             {
-                return Ok(products);
+                return NotFound(new { Message = "Нету продуктов с таким названием или описанием" });
             }
-            return NotFound(new { Messge = "Нету продуктов с таким названием или описанием" });
+            return Ok(products);
         }
 
         [HttpDelete]

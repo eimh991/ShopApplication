@@ -9,7 +9,8 @@ namespace Shop.Interfaces
         Task CreateAsync(ProductRequestDTO entity);
         Task UpdateAsync(ProductRequestDTO entity);
         Task<ProductResponceDTO> GetByIdAsync(int id);
-        Task<IEnumerable<ProductResponceDTO>> GetAllAsync(string search, int paginateSize, int page, string sortOrder);
+        Task<IEnumerable<ProductResponceDTO>> GetAllAsync(string search, int paginateSize, 
+                            int page, string sortOrder, string categoryName);
         Task DeleteAsync(int id);
         
     }
