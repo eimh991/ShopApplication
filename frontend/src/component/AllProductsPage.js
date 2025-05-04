@@ -13,8 +13,11 @@ const ProductsPage = () => {
   const [search, setSearch] = useState("");
   const [sortOrder, setSortOrder] = useState(""); // По умолчанию сортировка по возрастанию
   const [page, setPage] = useState(1);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [hasMore, setHasMore] = useState(false);
   const navigate = useNavigate();
+  
 
   /*const isAuthenticated = !!getCookie('ck');*/
   
@@ -25,6 +28,21 @@ const ProductsPage = () => {
     }
   }, [navigate]);
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get("https://localhost:5260/api/Category", {
+          withCredentials: true,
+        });
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Ошибка при загрузке категорий:", error);
+      }
+    };
+  
+    fetchCategories();
+  }, []);
+
   // Функция для загрузки данных с учетом сортировки и фильтрации
   const fetchProducts = async () => {
     try {
@@ -34,13 +52,13 @@ const ProductsPage = () => {
           paginateSize: 9,
           page,
           sortOrder,
+          categoryName: selectedCategory,
         },withCredentials: true,
       });
       
       const data = response.data;
       setProducts(data);
-
-      setHasMore(data.length ===9);
+      setHasMore(data.length === 9);
     } catch (error) {
       console.error("Ошибка загрузки продуктов:", error);
       setProducts([]);
@@ -50,7 +68,7 @@ const ProductsPage = () => {
 
   useEffect(() => {
     fetchProducts();
-  }, [page, sortOrder]); // Запрос при изменении страницы или сортировки
+  }, [page, sortOrder, selectedCategory]); // Запрос при изменении страницы или сортировки
 
   const handleSearch = () => {
     setPage(1); // Сбрасываем на первую страницу при новом поиске
@@ -70,6 +88,8 @@ const ProductsPage = () => {
   }
 */
 
+
+
   return (
     <div className="container mt-4">
       <h1 className="mb-4">Продукты</h1>
@@ -86,6 +106,21 @@ const ProductsPage = () => {
         <button className="btn btn-primary me-2" onClick={handleSearch}>
           Искать
         </button>
+
+        <select
+          className="form-select me-2"
+          style={{ maxWidth: '200px' }}
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
+          <option value="">Все категории</option>
+          {categories.map((category) => (
+            <option key={category.categoryId} value={category.categoryName}>
+              {category.categoryName}
+            </option>
+          ))}
+        </select>
+
         <div>
           <button
             className={`btn ${sortOrder === "" ? "btn-secondary" : "btn-outline-secondary"} me-1`}

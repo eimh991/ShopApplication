@@ -40,9 +40,12 @@ namespace Shop.Service
            await _productRepository.DeleteAsync(id);
         }
 
-        public async Task<IEnumerable<ProductResponceDTO>> GetAllAsync(string search, int paginateSize, int page, string sortOrder)
+        public async Task<IEnumerable<ProductResponceDTO>> GetAllAsync(string search, int paginateSize, 
+            int page, string sortOrder, string categoryName)
         {
-            var products = await ((ProductRepository)_productRepository).GetAllPaginateAsync(search, paginateSize, page, sortOrder);
+           var categoryId = await GetCategoryIdByCategoryNameAsync(categoryName);
+            var products = await ((ProductRepository)_productRepository).GetAllPaginateAsync(search, paginateSize, 
+                    page, sortOrder,categoryId);
             return ConvertProductToProductResponceDTO(products);
 
         }
@@ -164,6 +167,20 @@ namespace Shop.Service
                 return imageFileName;
             }
             return string.Empty;
+        }
+
+        private async Task<int> GetCategoryIdByCategoryNameAsync(string categoryName)
+        {
+            int categoryId = 0;
+            if (!string.IsNullOrEmpty(categoryName))
+            {
+                var category = await _categoryRepo.FindByCategoryTitleAsync(categoryName);
+                if (category != null)
+                {
+                    categoryId = category.CategoryId;
+                }
+            }
+            return categoryId;
         }
     }
 }

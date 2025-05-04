@@ -17,7 +17,7 @@ namespace Shop.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Category>>> GetAllCategories(string search = "")
+        public async Task<ActionResult<List<Category>>> GetAllCategoriesAsync(string search = "")
         {
             var categories = await _categoryService.GetAllAsync(search);
             if (categories != null)
@@ -27,7 +27,7 @@ namespace Shop.Controllers
             return NotFound(new { Messge = "По вашему запросу нету категорий" });
         }
         [HttpGet("id")]
-        public async Task<ActionResult<Category>> GetCategory(int id)
+        public async Task<ActionResult<Category>> GetCategoryAsync(int id)
         {
             var category = await _categoryService.GetByIdAsync(id);
             if (category != null)
@@ -37,21 +37,21 @@ namespace Shop.Controllers
             return NotFound(new { Messge = "По вашему запросу категория не найдена" });
         }
         [HttpPost]
-        public async Task<IActionResult> CreateCategory(CategoryDTO categoryDto)
+        public async Task<IActionResult> CreateCategoryAsync(CategoryDTO categoryDto)
         {
             await _categoryService.CreateAsync(categoryDto);
             return Ok(categoryDto);
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteCategory(int categoryId)
+        public async Task<IActionResult> DeleteCategoryAsync(int categoryId)
         {
             await _categoryService.DeleteAsync(categoryId);
             return Ok();
         }
 
         [HttpPut]
-        public async Task<IActionResult> CorrectCategory(CategoryDTO categoryDto)
+        public async Task<IActionResult> CorrectCategoryAsync(CategoryDTO categoryDto)
         {
             await _categoryService.UpdateAsync(categoryDto);
             return Ok(categoryDto);
