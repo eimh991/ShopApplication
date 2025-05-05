@@ -4,6 +4,6 @@ namespace Shop.Interfaces
 {
     public interface IUserBalanceUpdater
     {
-        Task UpdateBalanceAsync(User user);
+        Task UpdateBalanceAsync(User user, CancellationToken cancellationToken);
     }
 }

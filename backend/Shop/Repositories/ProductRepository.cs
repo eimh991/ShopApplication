@@ -12,13 +12,13 @@ namespace Shop.Repositories
         public ProductRepository(AppDbContext context) {
             _context = context;
         }
-        public async Task CreateAsync(Product entity)
+        public async Task CreateAsync(Product entity, CancellationToken cancellationToken)
         {
             await _context.Products.AddAsync(entity); //_context.Products.Attach(entity);
             await _context.SaveChangesAsync();  
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {   /*
             var product = await _context.Products.FirstOrDefaultAsync(p=>p.ProductId == id);
             if (product != null)
@@ -33,7 +33,7 @@ namespace Shop.Repositories
             
         }
 
-        public async Task<IEnumerable<Product>> GetAllAsync(string search)
+        public async Task<IEnumerable<Product>> GetAllAsync(string search, CancellationToken cancellationToken)
         {
             return await _context.Products
                             .AsNoTracking()
@@ -41,7 +41,7 @@ namespace Shop.Repositories
                             p.Name.ToLower().Contains(search.ToLower())).ToListAsync();
         }
 
-        public async Task<Product> GetByIdAsync(int id)
+        public async Task<Product> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
             var product = await _context.Products
                 .AsNoTracking()
@@ -55,7 +55,7 @@ namespace Shop.Repositories
 
         }
 
-        public  async Task UpdateAsync(Product entity)
+        public  async Task UpdateAsync(Product entity, CancellationToken cancellationToken)
         {
             await _context.Products
                .Where(p => p.ProductId == entity.ProductId)
@@ -67,7 +67,7 @@ namespace Shop.Repositories
 
         }
 
-        public async Task ChangePriceAsync(Product entity)
+        public async Task ChangePriceAsync(Product entity, CancellationToken cancellationToken)
         {
             await _context.Products
                .Where(p => p.ProductId == entity.ProductId)
@@ -75,7 +75,7 @@ namespace Shop.Repositories
                    .SetProperty(p => p.Price, entity.Price)
                );
         }
-        public async Task ChangeQuantityProductAsync(Product entity)
+        public async Task ChangeQuantityProductAsync(Product entity, CancellationToken cancellationToken)
         {
             var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == entity.ProductId);
             if (product != null)
@@ -86,7 +86,7 @@ namespace Shop.Repositories
   
         }
         public async Task<IEnumerable<Product>> GetAllPaginateAsync(string search, int paginateSize, 
-                                        int page, string sortOrder, int categoryId)
+                                        int page, string sortOrder, int categoryId, CancellationToken cancellationToken)
         {
             var query = _context.Products.AsNoTracking();
             if(categoryId != 0)
@@ -110,7 +110,7 @@ namespace Shop.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Product>> GetLastProductsAsync()
+        public async Task<IEnumerable<Product>> GetLastProductsAsync(CancellationToken cancellationToken)
         {
             var product =  await _context.Products
                             .AsNoTracking()
@@ -121,7 +121,7 @@ namespace Shop.Repositories
             return product;
         }
 
-        public async Task ChangeImagePathProductAsync(Product entity)
+        public async Task ChangeImagePathProductAsync(Product entity, CancellationToken cancellationToken)
         {
             await _context.Products
                .Where(p => p.ProductId == entity.ProductId)

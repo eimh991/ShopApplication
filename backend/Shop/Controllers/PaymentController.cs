@@ -22,7 +22,7 @@ namespace Shop.Controllers
         }
 
         [HttpPost("{provider}")]
-        public async Task<IActionResult> CreatePayment(string provider, [FromBody] PaymentRequestDto request)
+        public async Task<IActionResult> CreatePayment(string provider, [FromBody] PaymentRequestDto request, CancellationToken cancellationToken)
         {
             if (_paymentServices.TryGetValue(provider.ToLower(), out var paymentService))
             {
@@ -30,7 +30,7 @@ namespace Shop.Controllers
             }
             try
             {
-                var paymentResponse = await paymentService.CreatePaymentAsync(request);
+                var paymentResponse = await paymentService.CreatePaymentAsync(request, cancellationToken);
                 return Ok(paymentResponse);
             }
             catch (PaymentException ex)
@@ -40,7 +40,7 @@ namespace Shop.Controllers
         }
 
         [HttpPost("webhook/{provider}")]
-        public async Task<IActionResult> HandleWebhook(string provider, [FromBody] WebhookDto webhookData)
+        public async Task<IActionResult> HandleWebhook(string provider, [FromBody] WebhookDto webhookData, CancellationToken cancellationToken)
         {
             if (!_paymentServices.TryGetValue(provider.ToLower(), out var paymentService))
             {
@@ -48,7 +48,7 @@ namespace Shop.Controllers
             }
             try
             {
-                bool success = await paymentService.HandleWebhookAsync(webhookData);
+                bool success = await paymentService.HandleWebhookAsync(webhookData, cancellationToken);
                 return success
                     ? Ok(new { message = "Платеж подтвержден" })
                     : BadRequest(new { error = "Ошибка обработки вебхука" });

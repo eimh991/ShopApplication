@@ -5,8 +5,8 @@ namespace Shop.Interfaces
 {
     public interface ICartItemExtendedRepository
     {
-        Task<int> AddAsyncAndReturnCartItemId(int userId, CartItem cartItem);
-        Task UpdateQuantityAsync(CartItem cartItem);
-        Task<IEnumerable<CartProductDTO>> GetAllCartProductAsync(int userId);
+        Task<int> AddAsyncAndReturnCartItemId(int userId, CartItem cartItem, CancellationToken cancellationToken);
+        Task UpdateQuantityAsync(CartItem cartItem, CancellationToken cancellationToken);
+        Task<IEnumerable<CartProductDTO>> GetAllCartProductAsync(int userId, CancellationToken cancellationToken);
     }
 }

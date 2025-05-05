@@ -5,10 +5,10 @@ namespace Shop.Interfaces
 {
     public interface ICategoryService
     {
-        Task CreateAsync(CategoryDTO entity);
-        Task UpdateAsync(CategoryDTO entity);
-        Task<Category> GetByIdAsync(int id);
-        Task<IEnumerable<Category>> GetAllAsync(string search);
-        Task DeleteAsync(int id);
+        Task CreateAsync(CategoryDTO entity , CancellationToken cancellationToken);
+        Task UpdateAsync(CategoryDTO entity, CancellationToken cancellationToken);
+        Task<Category> GetByIdAsync(int id , CancellationToken cancellationToken);
+        Task<IEnumerable<Category>> GetAllAsync(string search, CancellationToken cancellationToken);
+        Task DeleteAsync(int id, CancellationToken cancellationToken);
     }
 }

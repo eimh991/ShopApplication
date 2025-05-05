@@ -28,19 +28,19 @@ namespace Shop.Service
             _cartItemExtendedRepository = cartItemExtendedRepository;
         }
 
-        public async Task ClearAllCartItemsAsync(int userId)
+        public async Task ClearAllCartItemsAsync(int userId, CancellationToken cancellationToken)
         {
-           await _cartItemCleaner.DeleteAllCartItemsAsync(userId);
+           await _cartItemCleaner.DeleteAllCartItemsAsync(userId, cancellationToken);
         }
 
-        public async Task<int> CreateCartItemAsync(CartItemDTO cartItemDTO)
+        public async Task<int> CreateCartItemAsync(CartItemDTO cartItemDTO, CancellationToken cancellationToken)
         {
             var userId = cartItemDTO.UserId;
-            var product = await _productRepository.GetByIdAsync(cartItemDTO.ProductId);
+            var product = await _productRepository.GetByIdAsync(cartItemDTO.ProductId, cancellationToken);
 
             var cartItem = new CartItem()
             {
-                Cart = await GetUserCartAsync(userId),
+                Cart = await GetUserCartAsync(userId, cancellationToken),
                 Quantity = cartItemDTO.Quantity,
                 Product = product
                 /*
@@ -55,18 +55,18 @@ namespace Shop.Service
                 },*/
             };
 
-           var carItemId =  await _cartItemExtendedRepository.AddAsyncAndReturnCartItemId(userId, cartItem);
+           var carItemId =  await _cartItemExtendedRepository.AddAsyncAndReturnCartItemId(userId, cartItem, cancellationToken);
             return carItemId;
         }
 
-        public async Task DeleteCartItemAsync(int cartItemId)
+        public async Task DeleteCartItemAsync(int cartItemId, CancellationToken cancellationToken)
         {
-            await _cartItemRepository.DeleteAsync(cartItemId);
+            await _cartItemRepository.DeleteAsync(cartItemId, cancellationToken);
         }
 
-        public async Task<IEnumerable<CardItemResponseDTO>> GetAllCartItemsAsync(int userId)
+        public async Task<IEnumerable<CardItemResponseDTO>> GetAllCartItemsAsync(int userId, CancellationToken cancellationToken)
         {
-            var items =  await _cartItemRepository.GetAllAsync(userId);
+            var items =  await _cartItemRepository.GetAllAsync(userId, cancellationToken);
             return items.Select(i=> new CardItemResponseDTO()
             {
                 CartId = i.CartId,
@@ -78,27 +78,28 @@ namespace Shop.Service
 
          
 
-        public async Task<CartItem> GetCartItemByIdAsync(int userId, int entityId)
+        public async Task<CartItem> GetCartItemByIdAsync(int userId, int entityId, CancellationToken cancellationToken)
         {
-            return await _cartItemRepository.GetByIdAsync(userId, entityId);
+            return await _cartItemRepository.GetByIdAsync(userId, entityId, cancellationToken);
         }
 
-        public async Task UpdateCountCartItemsAsync(int cartItemId, int quantity)
+        public async Task UpdateCountCartItemsAsync(int cartItemId, int quantity, CancellationToken cancellationToken)
         {
             var cartItem = new CartItem { CartItemId = cartItemId, Quantity = quantity };
 
-            await _cartItemExtendedRepository.UpdateQuantityAsync(cartItem);
+            await _cartItemExtendedRepository.UpdateQuantityAsync(cartItem, cancellationToken);
         }
 
-        public async Task<IEnumerable<CartProductDTO>> GetAllCartProductAsync(int userId)
+        public async Task<IEnumerable<CartProductDTO>> GetAllCartProductAsync(int userId, CancellationToken cancellationToken)
         {
-            var cartProduct  = await _cartItemExtendedRepository.GetAllCartProductAsync(userId);
+            var cartProduct  = await _cartItemExtendedRepository.GetAllCartProductAsync(userId, cancellationToken);
 
             return cartProduct;
         }
 
-        private async Task<Cart> GetUserCartAsync(int userId) {
-            var user = await _additionalRepository.GetUserWithCartAsync(userId);
+        private async Task<Cart> GetUserCartAsync(int userId, CancellationToken cancellationToken) 
+        {
+            var user = await _additionalRepository.GetUserWithCartAsync(userId, cancellationToken);
             if(user != null) {
                 return user.Cart;
             }

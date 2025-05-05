@@ -13,34 +13,34 @@ namespace Shop.Service
             _categoryRepository = categoryRepository;
             _categoryRepoFindTitle = categoryRepoFindTitle;
         }
-        public async Task CreateAsync(CategoryDTO entity)
+        public async Task CreateAsync(CategoryDTO entity, CancellationToken cancellationToken)
         {
-            await _categoryRepository.CreateAsync(ConvertCategoryDTOToCAtegoty(entity));
+            await _categoryRepository.CreateAsync(ConvertCategoryDTOToCAtegoty(entity),cancellationToken);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-           await _categoryRepository.DeleteAsync(id);
+           await _categoryRepository.DeleteAsync(id, cancellationToken);
         }
 
-        public async Task<IEnumerable<Category>> GetAllAsync(string search)
+        public async Task<IEnumerable<Category>> GetAllAsync(string search, CancellationToken cancellationToken)
         {
-            return await _categoryRepository.GetAllAsync(search);
+            return await _categoryRepository.GetAllAsync(search, cancellationToken);
         }
 
-        public async Task<Category> GetByIdAsync(int id)
+        public async Task<Category> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return await _categoryRepository.GetByIdAsync(id);
+            return await _categoryRepository.GetByIdAsync(id, cancellationToken);
         }
 
-        public Task UpdateAsync(CategoryDTO entity)
+        public Task UpdateAsync(CategoryDTO entity, CancellationToken cancellationToken)
         {
-            return _categoryRepository.UpdateAsync(ConvertCategoryDTOToCAtegoty(entity));
+            return _categoryRepository.UpdateAsync(ConvertCategoryDTOToCAtegoty(entity), cancellationToken);
         }
 
-        public async Task<Category> GetByTitleAsync(string name)
+        public async Task<Category> GetByTitleAsync(string name, CancellationToken cancellationToken)
         {
-            return await _categoryRepoFindTitle.FindByCategoryTitleAsync(name);
+            return await _categoryRepoFindTitle.FindByCategoryTitleAsync(name, cancellationToken);
         }
 
         private Category ConvertCategoryDTOToCAtegoty(CategoryDTO categoryDTO)

@@ -13,7 +13,7 @@ namespace Shop.Repositories
         {
             _context = context;
         }
-        public async Task AddAsync(int userId, Order entity)
+        public async Task AddAsync(int userId, Order entity, CancellationToken cancellationToken)
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.UserId == userId);
@@ -26,12 +26,12 @@ namespace Shop.Repositories
 
         }
 
-        public Task AddRangeAsync(int userId, List<Order> entities)
+        public Task AddRangeAsync(int userId, List<Order> entities, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public async Task DeleteAsync(int entityId)
+        public async Task DeleteAsync(int entityId, CancellationToken cancellationToken)
         {
             await _context.Orders
                 .Where(o=>o.OrderId == entityId)
@@ -40,7 +40,7 @@ namespace Shop.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public  async Task<IEnumerable<Order>> GetAllAsync(int userId)
+        public  async Task<IEnumerable<Order>> GetAllAsync(int userId, CancellationToken cancellationToken)
         {
                 return await _context.Orders
                     .AsNoTracking()
@@ -50,7 +50,7 @@ namespace Shop.Repositories
                     .ToListAsync();
         }
 
-        public async Task<Order> GetByIdAsync(int userId, int entityId)
+        public async Task<Order> GetByIdAsync(int userId, int entityId, CancellationToken cancellationToken)
         {
             return await _context.Orders
                     .AsNoTracking()
@@ -74,7 +74,7 @@ namespace Shop.Repositories
             */
         }
 
-        public Task UpdateAsync(int userId, Order entity)
+        public Task UpdateAsync(int userId, Order entity, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

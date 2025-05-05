@@ -19,7 +19,7 @@ namespace Shop.Service.PaymentService
             _httpClient = httpClient;
         }
    
-        public async Task<PaymentResponseDto> CreatePaymentAsync(PaymentRequestDto requestDto)
+        public async Task<PaymentResponseDto> CreatePaymentAsync(PaymentRequestDto requestDto, CancellationToken cancellationToken)
         {
             var orderId = Guid.NewGuid().ToString();
             var payload = new
@@ -52,7 +52,7 @@ namespace Shop.Service.PaymentService
             };
         }
 
-        public async Task<bool> HandleWebhookAsync(WebhookDto webhookData)
+        public async Task<bool> HandleWebhookAsync(WebhookDto webhookData, CancellationToken cancellationToken)
         {
             if(webhookData.Status == "PAID")
             {

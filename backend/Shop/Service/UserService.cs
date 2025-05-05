@@ -24,19 +24,19 @@ namespace Shop.Service
             _userAdditionalRepository = userAdditionalRepository;
         }
 
-        public async Task ChangeStatusAsync(int userId,string status)
+        public async Task ChangeStatusAsync(int userId,string status, CancellationToken cancellationToken)
         {
             if (!string.IsNullOrEmpty(status)
                 && status.ToLower() == UserRole.Manager.ToString().ToLower()
                 || status.ToLower() == UserRole.Admin.ToString().ToLower())
             {
 
-                await _userAdditionalRepository.ChangeStatusAsync(userId,status);
+                await _userAdditionalRepository.ChangeStatusAsync(userId,status, cancellationToken);
 
             }
         }
 
-        public async Task CreateAsync(UserDTO entity)
+        public async Task CreateAsync(UserDTO entity , CancellationToken cancellationToken)
         {
             User user = new User()
             {
@@ -47,30 +47,30 @@ namespace Shop.Service
                 UserRole = Enum.UserRole.User,
             };
             
-            await  _userRepository.CreateAsync(user);
+            await  _userRepository.CreateAsync(user, cancellationToken);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            await _userRepository.DeleteAsync(id);
+            await _userRepository.DeleteAsync(id, cancellationToken);
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync(string search)
+        public async Task<IEnumerable<User>> GetAllAsync(string search , CancellationToken cancellationToken)
         {
-            return await _userRepository.GetAllAsync(search);
+            return await _userRepository.GetAllAsync(search, cancellationToken);
         }
 
-        public async Task<User> GetByEmaiAsync(string email)
+        public async Task<User> GetByEmaiAsync(string email , CancellationToken cancellationToken)
         {
-             return await _userAdditionalRepository.GetByEmailAsync(email);
+             return await _userAdditionalRepository.GetByEmailAsync(email, cancellationToken);
         }
 
-        public async Task<User> GetByIdAsync(int id)
+        public async Task<User> GetByIdAsync(int id , CancellationToken cancellationToken)
         {
-            return await _userRepository.GetByIdAsync(id);
+            return await _userRepository.GetByIdAsync(id, cancellationToken);
         }
 
-        public async Task UpdateAsync(UserDTO entity)
+        public async Task UpdateAsync(UserDTO entity , CancellationToken cancellationToken)
         {
             User user = new User()
             {
@@ -79,7 +79,7 @@ namespace Shop.Service
                 Email = entity.Email,
                 PasswordHash = Register(entity.Password),
             };
-           await _userRepository.UpdateAsync(user);
+           await _userRepository.UpdateAsync(user, cancellationToken);
         }
 
         private string Register(string password)
@@ -87,9 +87,9 @@ namespace Shop.Service
             return _passwordHasher.Generate(password);  
         }
 
-        public async Task<string> Login(string email ,string password)
+        public async Task<string> Login(string email ,string password, CancellationToken cancellationToken)
         {
-            var user = await _userAdditionalRepository.GetByEmailAsync(email);
+            var user = await _userAdditionalRepository.GetByEmailAsync(email, cancellationToken);
             if (user != null)
             {
                 var result = _passwordHasher.Verify(password, user.PasswordHash);
@@ -105,9 +105,9 @@ namespace Shop.Service
             throw new Exception("Нет такого пользователя");
         }
 
-        public async Task<IEnumerable<CartItem>> GetUserCartItemsAsync(int userId)
+        public async Task<IEnumerable<CartItem>> GetUserCartItemsAsync(int userId, CancellationToken cancellationToken)
         {
-            var user = await _userAdditionalRepository.GetUserWithCartsItemAsync(userId);
+            var user = await _userAdditionalRepository.GetUserWithCartsItemAsync(userId, cancellationToken);
             if (user != null)
             {
                 return user.Cart.CartItems;

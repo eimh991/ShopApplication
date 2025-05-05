@@ -22,16 +22,16 @@ namespace Shop.Controllers
             _userService = userService;
         }
         [HttpPost]
-        public async Task<IActionResult> Register(UserDTO userDTO)
+        public async Task<IActionResult> Register(UserDTO userDTO, CancellationToken cancellationToken)
         {
-            await _userService.CreateAsync(userDTO);
+            await _userService.CreateAsync(userDTO, cancellationToken);
 
             return Ok();
         }
 
         //[Authorize]
         [HttpGet("getme")]
-        public async Task<ActionResult<User>> GetingUser()
+        public ActionResult<User> GetingUser()
         {
 
             /*var userStringId = HttpContext.User.Claims
@@ -63,32 +63,32 @@ namespace Shop.Controllers
 
         [HttpDelete]
 
-        public async Task<IActionResult> DeleteUser(int userId)
+        public async Task<IActionResult> DeleteUser(int userId, CancellationToken cancellationToken)
         {
-            await _userService.DeleteAsync(userId);
+            await _userService.DeleteAsync(userId, cancellationToken);
             return Ok();
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateUser(UserDTO user)
+        public async Task<IActionResult> UpdateUser(UserDTO user, CancellationToken cancellationToken)
         {
-            await _userService.UpdateAsync(user);
+            await _userService.UpdateAsync(user, cancellationToken);
             return Ok();
         }
 
         [HttpPost("status")]
-        public async Task<IActionResult> ChangeStatusAsync(UserDTO userDTO, string status)
+        public async Task<IActionResult> ChangeStatusAsync(UserDTO userDTO, string status, CancellationToken cancellationToken)
         {
-            await _userService.ChangeStatusAsync(userDTO.UserId,status);
+            await _userService.ChangeStatusAsync(userDTO.UserId,status, cancellationToken);
 
             return Ok();
         }
 
         [HttpGet("id")]
         [AuthorizeRole(UserRole.Admin)]
-        public async Task<ActionResult<User>> GetUserByIdAsync(int id)
+        public async Task<ActionResult<User>> GetUserByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var user = await _userService.GetByIdAsync(id);
+            var user = await _userService.GetByIdAsync(id, cancellationToken);
             if (user == null)
             {
                 throw new Exception("Нету такого пользователя");
@@ -97,9 +97,9 @@ namespace Shop.Controllers
         }
 
         [HttpGet("checkmoney")]
-        public async Task<ActionResult<bool>> CheckMoneyInAccount(int userId, decimal cartCoast)
+        public async Task<ActionResult<bool>> CheckMoneyInAccount(int userId, decimal cartCoast, CancellationToken cancellationToken)
         {
-            var user = await _userService.GetByIdAsync(userId);
+            var user = await _userService.GetByIdAsync(userId, cancellationToken);
             if (user == null)
             {
                 throw new Exception("Нету такого пользователя");

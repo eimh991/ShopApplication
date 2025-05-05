@@ -15,7 +15,7 @@ namespace Shop.Repositories
             _context = context;
         }
 
-        public async Task AddAsync(int userId, CartItem entity)
+        public async Task AddAsync(int userId, CartItem entity, CancellationToken cancellationToken)
         {
             var user = await _context.Users
                 .Include(u => u.Cart)
@@ -32,7 +32,7 @@ namespace Shop.Repositories
             }
         }
 
-        public async Task AddRangeAsync(int userId, List<CartItem> entitys)
+        public async Task AddRangeAsync(int userId, List<CartItem> entitys, CancellationToken cancellationToken)
         {
             var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
             if (user != null)
@@ -43,14 +43,14 @@ namespace Shop.Repositories
             throw new EntryPointNotFoundException();
         }
 
-        public async Task DeleteAsync(int entityId)
+        public async Task DeleteAsync(int entityId, CancellationToken cancellationToken)
         {
             await _context.CartItems
                 .Where(ci=>ci.CartItemId == entityId)
                 .ExecuteDeleteAsync();
         }
 
-        public async Task<IEnumerable<CartItem>> GetAllAsync(int userId)
+        public async Task<IEnumerable<CartItem>> GetAllAsync(int userId, CancellationToken cancellationToken)
         {
             var user =  await _context.Users
                 .AsNoTracking()
@@ -64,7 +64,7 @@ namespace Shop.Repositories
             return Enumerable.Empty<CartItem>();
         }
 
-        public  async Task<CartItem> GetByIdAsync(int userId,int entityId)
+        public  async Task<CartItem> GetByIdAsync(int userId,int entityId, CancellationToken cancellationToken)
         {
             var user = await _context.Users
                 .AsNoTracking()
@@ -78,7 +78,7 @@ namespace Shop.Repositories
 
         }
 
-        public async Task UpdateQuantityAsync(CartItem entity)
+        public async Task UpdateQuantityAsync(CartItem entity, CancellationToken cancellationToken)
         {
 
             var cartItem = await _context.CartItems
@@ -91,7 +91,7 @@ namespace Shop.Repositories
             }
         }
 
-        public async Task DeleteAllCartItemsAsync(int userId)
+        public async Task DeleteAllCartItemsAsync(int userId, CancellationToken cancellationToken)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
             if (user != null)
@@ -101,12 +101,12 @@ namespace Shop.Repositories
             }
         }
 
-        public Task UpdateAsync(int userId, CartItem entity)
+        public Task UpdateAsync(int userId, CartItem entity, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<CartProductDTO>> GetAllCartProductAsync(int userId)
+        public async Task<IEnumerable<CartProductDTO>> GetAllCartProductAsync(int userId, CancellationToken cancellationToken)
         {
             var user = await _context.Users
                 .AsNoTracking()
@@ -141,7 +141,7 @@ namespace Shop.Repositories
             return cartProducts;
         }
 
-        public async Task<int> AddAsyncAndReturnCartItemId(int userId, CartItem entity)
+        public async Task<int> AddAsyncAndReturnCartItemId(int userId, CartItem entity, CancellationToken cancellationToken)
         {
             var user = await _context.Users
                 .Include(u => u.Cart)

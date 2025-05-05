@@ -19,17 +19,17 @@ namespace Shop.Controllers
             _productService = productService;
         }
         [HttpPost]
-        public async Task<IActionResult> CreateProductAsync([FromForm]ProductRequestDTO productDTO)
+        public async Task<IActionResult> CreateProductAsync([FromForm]ProductRequestDTO productDTO, CancellationToken cancellationToken)
         {
-            await _productService.CreateAsync(productDTO);
+            await _productService.CreateAsync(productDTO, cancellationToken);
 
             return Ok();
         }
 
         [HttpGet("id")]
-        public async Task<ActionResult<ProductResponceDTO>> GetProductByIdAsync(int productID)
+        public async Task<ActionResult<ProductResponceDTO>> GetProductByIdAsync(int productID, CancellationToken cancellationToken)
         {
-            var product = await _productService.GetByIdAsync(productID);
+            var product = await _productService.GetByIdAsync(productID, cancellationToken);
 
             if (product != null)
             {
@@ -40,9 +40,9 @@ namespace Shop.Controllers
 
         [HttpGet]
         public async Task<ActionResult<List<ProductResponceDTO>>> GetProductsAsync(string search = "", 
-            int paginateSize = 9, int page = 1, string sortOrder = "", string categoryName = "")
+            int paginateSize = 9, int page = 1, string sortOrder = "", string categoryName = "", CancellationToken cancellationToken = default)
         {
-            var products = await _productService.GetAllAsync(search, paginateSize,page,sortOrder, categoryName);
+            var products = await _productService.GetAllAsync(search, paginateSize,page,sortOrder, categoryName,cancellationToken);
             if (!products.Any())
             {
                 return NotFound(new { Message = "Нету продуктов с таким названием или описанием" });
@@ -51,33 +51,33 @@ namespace Shop.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteProductAsync(int productId)
+        public async Task<IActionResult> DeleteProductAsync(int productId, CancellationToken cancellationToken)
         {
-            await _productService.DeleteAsync(productId);
+            await _productService.DeleteAsync(productId, cancellationToken);
 
             return Ok();
         }
 
         [HttpPut]
-        public async Task<IActionResult> ChangeProductAsync(ProductRequestDTO productDTO)
+        public async Task<IActionResult> ChangeProductAsync(ProductRequestDTO productDTO, CancellationToken cancellationToken)
         {
-            await _productService.UpdateAsync(productDTO);
+            await _productService.UpdateAsync(productDTO, cancellationToken);
 
             return Ok();
         }
 
         [HttpPut("price")]
-        public async Task<IActionResult> ChangePriceProduct([FromForm]ProductRequestDTO productDTO)
+        public async Task<IActionResult> ChangePriceProduct([FromForm]ProductRequestDTO productDTO, CancellationToken cancellationToken)
         {
-            await ((ProductService)_productService).ChangePriceAsync(productDTO);
+            await ((ProductService)_productService).ChangePriceAsync(productDTO, cancellationToken);
 
             return Ok();
         }
 
         [HttpGet("last")]
-        public async Task<ActionResult<List<ProductResponceDTO>>> GetLastProductsAsync()
+        public async Task<ActionResult<List<ProductResponceDTO>>> GetLastProductsAsync(CancellationToken cancellationToken)
         {
-            var products = await ((ProductService)_productService).GetLastProductsAsync();
+            var products = await ((ProductService)_productService).GetLastProductsAsync(cancellationToken);
             if (products != null)
             {
                 return Ok(products);
@@ -88,9 +88,9 @@ namespace Shop.Controllers
         
         [HttpPut("imagePath")]
         [AuthorizeRole(UserRole.Admin)]
-        public async Task<IActionResult> ChangeImagePathProduct([FromForm] ProductRequestChangeImageDTO productDTO)
+        public async Task<IActionResult> ChangeImagePathProduct([FromForm] ProductRequestChangeImageDTO productDTO, CancellationToken cancellationToken)
         {
-            await ((ProductService)_productService).ChangeImagePathAsync(productDTO);
+            await ((ProductService)_productService).ChangeImagePathAsync(productDTO, cancellationToken);
 
             return Ok();
         }

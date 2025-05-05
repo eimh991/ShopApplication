@@ -14,9 +14,9 @@ namespace Shop.Service
             _productRepository = productRepository;
             _categoryRepo = categoryRepo;
         }
-        public async Task CreateAsync(ProductRequestDTO entity)
+        public async Task CreateAsync(ProductRequestDTO entity, CancellationToken cancellationToken)
         {
-            var category =  await _categoryRepo.FindByCategoryTitleAsync(entity.CategoryTitle);
+            var category =  await _categoryRepo.FindByCategoryTitleAsync(entity.CategoryTitle, cancellationToken);
 
             string imagePaath = GenerateImagePath(entity.Image).Result;
 
@@ -30,36 +30,36 @@ namespace Shop.Service
                 Stock = entity.Stock,
                 CategoryId = category.CategoryId,
             };
-            await _productRepository.CreateAsync(product);
+            await _productRepository.CreateAsync(product, cancellationToken);
 
 
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-           await _productRepository.DeleteAsync(id);
+           await _productRepository.DeleteAsync(id, cancellationToken);
         }
 
         public async Task<IEnumerable<ProductResponceDTO>> GetAllAsync(string search, int paginateSize, 
-            int page, string sortOrder, string categoryName)
+            int page, string sortOrder, string categoryName, CancellationToken cancellationToken)
         {
-           var categoryId = await GetCategoryIdByCategoryNameAsync(categoryName);
+           var categoryId = await GetCategoryIdByCategoryNameAsync(categoryName,cancellationToken);
             var products = await ((ProductRepository)_productRepository).GetAllPaginateAsync(search, paginateSize, 
-                    page, sortOrder,categoryId);
+                    page, sortOrder,categoryId,cancellationToken);
             return ConvertProductToProductResponceDTO(products);
 
         }
 
-        public async Task<ProductResponceDTO> GetByIdAsync(int id)
+        public async Task<ProductResponceDTO> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var product = await _productRepository.GetByIdAsync(id);
+            var product = await _productRepository.GetByIdAsync(id, cancellationToken);
             var responceProduct = ConvertProductToProductResponceDTO(new List<Product> {product})[0];
             return responceProduct;
         }
 
-        public async Task UpdateAsync(ProductRequestDTO entity)
+        public async Task UpdateAsync(ProductRequestDTO entity, CancellationToken cancellationToken)
         {
-            var category = await _categoryRepo.FindByCategoryTitleAsync(entity.CategoryTitle);
+            var category = await _categoryRepo.FindByCategoryTitleAsync(entity.CategoryTitle,cancellationToken);
             string imagePaath = GenerateImagePath(entity.Image).Result;
             Product product = new Product
             {
@@ -71,10 +71,10 @@ namespace Shop.Service
                 Stock = entity.Stock,
                 CategoryId = category.CategoryId,
             };
-            await _productRepository.UpdateAsync(product);
+            await _productRepository.UpdateAsync(product, cancellationToken);
         }
 
-        public async Task ChangePriceAsync(ProductRequestDTO entity)
+        public async Task ChangePriceAsync(ProductRequestDTO entity, CancellationToken cancellationToken)
         {
             if(entity.Price > 0m)
             {
@@ -83,12 +83,12 @@ namespace Shop.Service
                     ProductId = entity.ProductId,
                     Price = entity.Price,
                 };
-                 await ((ProductRepository)_productRepository).ChangePriceAsync(product);
+                 await ((ProductRepository)_productRepository).ChangePriceAsync(product, cancellationToken);
             }
             
         }
 
-        public async Task ChangeQuantityProductAsync(ProductRequestDTO entity)
+        public async Task ChangeQuantityProductAsync(ProductRequestDTO entity, CancellationToken cancellationToken)
         {
             if (entity.Stock > 0m)
             {
@@ -97,26 +97,26 @@ namespace Shop.Service
                     ProductId = entity.ProductId,
                     Stock = entity.Stock,
                 };
-                await ((ProductRepository)_productRepository).ChangeQuantityProductAsync(product);
+                await ((ProductRepository)_productRepository).ChangeQuantityProductAsync(product, cancellationToken);
             }
 
         }
 
-        public async Task<IEnumerable<ProductResponceDTO>> GetLastProductsAsync()
+        public async Task<IEnumerable<ProductResponceDTO>> GetLastProductsAsync(CancellationToken cancellationToken)
         {
-            var products = await ((ProductRepository)_productRepository).GetLastProductsAsync();
+            var products = await ((ProductRepository)_productRepository).GetLastProductsAsync(cancellationToken);
             return ConvertProductToProductResponceDTO(products);
 
         }
 
-        public async Task ChangeImagePathAsync(ProductRequestChangeImageDTO entity)
+        public async Task ChangeImagePathAsync(ProductRequestChangeImageDTO entity, CancellationToken cancellationToken)
         {
             var product = new Product
             {
                 ProductId = entity.ProductId,
                 ImagePath = CheckingProductPictures(GenerateImagePath(entity.Image).Result),
             };
-            await ((ProductRepository)_productRepository).ChangeImagePathProductAsync(product);
+            await ((ProductRepository)_productRepository).ChangeImagePathProductAsync(product, cancellationToken);
 
         }
 
@@ -169,12 +169,12 @@ namespace Shop.Service
             return string.Empty;
         }
 
-        private async Task<int> GetCategoryIdByCategoryNameAsync(string categoryName)
+        private async Task<int> GetCategoryIdByCategoryNameAsync(string categoryName, CancellationToken cancellationToken)
         {
             int categoryId = 0;
             if (!string.IsNullOrEmpty(categoryName))
             {
-                var category = await _categoryRepo.FindByCategoryTitleAsync(categoryName);
+                var category = await _categoryRepo.FindByCategoryTitleAsync(categoryName, cancellationToken);
                 if (category != null)
                 {
                     categoryId = category.CategoryId;

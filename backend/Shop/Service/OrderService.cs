@@ -26,7 +26,7 @@ namespace Shop.Service
             _redisDb = redisDb;
         }
 
-        public async Task CreateOrderAsync(int userId,IEnumerable<CartItem> items)
+        public async Task CreateOrderAsync(int userId,IEnumerable<CartItem> items, CancellationToken cancellationToken)
         {
             var orderItems = ConvertCartItemsToOrderItems(items);
             var order = new Model.Order
@@ -36,7 +36,7 @@ namespace Shop.Service
                 TotalAmount = AllOrderPrice(orderItems.ToList())
             };
             
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByIdAsync(userId,cancellationToken);
             if (user == null)
             {
                 throw new InvalidOperationException($"Пользователь с id {userId} не найден.");
@@ -45,18 +45,18 @@ namespace Shop.Service
             {
                 throw new InvalidOperationException("Недостаточно средств для оформления заказа.");
             }
-            await _orderRepository.AddAsync(userId, order);
+            await _orderRepository.AddAsync(userId, order,cancellationToken);
             user.Balance -= order.TotalAmount;
             
-            await _userBalanceUpdater.UpdateBalanceAsync(user);
+            await _userBalanceUpdater.UpdateBalanceAsync(user, cancellationToken);
 
-            await _cartCleaner.DeleteAllCartItemsAsync(userId);
+            await _cartCleaner.DeleteAllCartItemsAsync(userId, cancellationToken);
 
             //  Очистка кэша для этого пользователя
             await _redisDb.KeyDeleteAsync($"order_user_{userId}", CommandFlags.None);
         }
 
-        public async Task<IEnumerable<OrderDTO>> GetAllOrdersDTOAsync(int userId)
+        public async Task<IEnumerable<OrderDTO>> GetAllOrdersDTOAsync(int userId, CancellationToken cancellationToken)
         {
             var cacheKey = $"order_user_{userId}";
 
@@ -68,7 +68,7 @@ namespace Shop.Service
                 return JsonConvert.DeserializeObject<List<OrderDTO>>(cachedOrders);
             }
 
-            var ordersFromDb = await _orderRepository.GetAllAsync(userId);
+            var ordersFromDb = await _orderRepository.GetAllAsync(userId, cancellationToken);
             var orderDTO = ConverOrderToOrderDTO(ordersFromDb);
 
             // Если данные есть, сериализуем и сохраняем в Redis
@@ -82,14 +82,14 @@ namespace Shop.Service
 
         }
 
-        public async Task<Model.Order> GetOrderByIdAsync(int userId, int entityId)
+        public async Task<Model.Order> GetOrderByIdAsync(int userId, int entityId, CancellationToken cancellationToken)
         {
-            return await _orderRepository.GetByIdAsync(userId, entityId);
+            return await _orderRepository.GetByIdAsync(userId, entityId, cancellationToken);
         }
 
-        public async Task DeleteOrderAsync(int entityId)
+        public async Task DeleteOrderAsync(int entityId, CancellationToken cancellationToken)
         {
-             await _orderRepository.DeleteAsync(entityId);
+             await _orderRepository.DeleteAsync(entityId, cancellationToken);
 
         }
 
@@ -155,7 +155,7 @@ namespace Shop.Service
                     
         }
 
-        Task<IEnumerable<Model.Order>> IOrderService.GetAllOrdersAsync(int userId)
+        Task<IEnumerable<Model.Order>> IOrderService.GetAllOrdersAsync(int userId, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

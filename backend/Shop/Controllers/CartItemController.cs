@@ -19,17 +19,17 @@ namespace Shop.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CreateCartItem(CartItemDTO cartItemDTO)
+        public async Task<ActionResult<int>> CreateCartItem(CartItemDTO cartItemDTO, CancellationToken cancellationToken)
         {
-           var carItemId =  await _cartItemService.CreateCartItemAsync(cartItemDTO);
+           var carItemId =  await _cartItemService.CreateCartItemAsync(cartItemDTO,cancellationToken);
 
             return Ok(carItemId);
         }
 
         [HttpGet("id")]
-        public async Task<ActionResult<CartItem>> GetCartItem(int userId,  int cartItemId)
+        public async Task<ActionResult<CartItem>> GetCartItem(int userId,  int cartItemId, CancellationToken cancellationToken)
         {
-          var cartItem  =   await _cartItemService.GetCartItemByIdAsync(userId, cartItemId);
+          var cartItem  =   await _cartItemService.GetCartItemByIdAsync(userId, cartItemId,cancellationToken);
             if (cartItem != null)
             {
                 return Ok(cartItem);
@@ -37,9 +37,9 @@ namespace Shop.Controllers
             return NotFound(new { Messge = "Данный продукт в вашей корзине не найден" });
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CardItemResponseDTO>>> GetAllCartItems(int userId)
+        public async Task<ActionResult<IEnumerable<CardItemResponseDTO>>> GetAllCartItems(int userId, CancellationToken cancellationToken)
         {
-            var items = await _cartItemService.GetAllCartItemsAsync(userId);
+            var items = await _cartItemService.GetAllCartItemsAsync(userId, cancellationToken);
             if (items == null || items == Enumerable.Empty<CardItemResponseDTO>())
             {
                 return Ok(Enumerable.Empty<CardItemResponseDTO>());
@@ -48,26 +48,26 @@ namespace Shop.Controllers
         }
 
         [HttpPut("QuentityChange")]
-        public async Task<IActionResult> QuentityChange(int cartItemId, int quantity)
+        public async Task<IActionResult> QuentityChange(int cartItemId, int quantity, CancellationToken cancellationToken)
         {
-            await _cartItemService.UpdateCountCartItemsAsync(cartItemId, quantity);
+            await _cartItemService.UpdateCountCartItemsAsync(cartItemId, quantity, cancellationToken);
 
             return Ok();
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete(int cartItemId)
+        public async Task<IActionResult> Delete(int cartItemId, CancellationToken cancellationToken)
         {
-           await _cartItemService.DeleteCartItemAsync(cartItemId);
+           await _cartItemService.DeleteCartItemAsync(cartItemId, cancellationToken);
 
             return Ok();
         }
 
         
         [HttpGet("CartProducts")]
-        public async Task<IEnumerable<CartProductDTO>> GetAllCartProduct([FromQuery] int userId)
+        public async Task<IEnumerable<CartProductDTO>> GetAllCartProduct([FromQuery] int userId, CancellationToken cancellationToken)
         {
-            var cartProducts = await ((CartItemSercive)_cartItemService).GetAllCartProductAsync(userId);
+            var cartProducts = await ((CartItemSercive)_cartItemService).GetAllCartProductAsync(userId, cancellationToken);
 
             return cartProducts;
         }

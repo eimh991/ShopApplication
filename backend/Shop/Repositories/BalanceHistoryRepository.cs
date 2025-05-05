@@ -13,7 +13,7 @@ namespace Shop.Repositories
         {
             _context = context;
         }
-        public async Task AddAsync(int userId, BalanceHistory entity)
+        public async Task AddAsync(int userId, BalanceHistory entity, CancellationToken cancellationToken)
         {
             var user =  await _context.Users
                 .FirstOrDefaultAsync(u => u.UserId == userId);
@@ -26,7 +26,7 @@ namespace Shop.Repositories
             }
         }
 
-        public async Task AddRangeAsync(int userId, List<BalanceHistory> entitys)
+        public async Task AddRangeAsync(int userId, List<BalanceHistory> entitys, CancellationToken cancellationToken)
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.UserId == userId);
@@ -42,14 +42,14 @@ namespace Shop.Repositories
             }
         }
 
-        public async Task DeleteAsync(int entityId)
+        public async Task DeleteAsync(int entityId, CancellationToken cancellationToken)
         {
             await _context.BalanceHistorys
                 .Where(b=>b.BalanceHistoryId == entityId)
                 .ExecuteDeleteAsync();
         }
 
-        public async Task<IEnumerable<BalanceHistory>> GetAllAsync(int userId)
+        public async Task<IEnumerable<BalanceHistory>> GetAllAsync(int userId, CancellationToken cancellationToken)
         {
             var user = await _context.Users
                 .AsNoTracking()
@@ -61,7 +61,7 @@ namespace Shop.Repositories
             return Enumerable.Empty<BalanceHistory>();
         }
 
-        public async Task<BalanceHistory> GetByIdAsync(int userId, int entityId)
+        public async Task<BalanceHistory> GetByIdAsync(int userId, int entityId, CancellationToken cancellationToken)
         {
             var user = await _context.Users
                 .AsNoTracking()
@@ -75,7 +75,7 @@ namespace Shop.Repositories
             return null;
         }
 
-        public Task UpdateAsync(int userId, BalanceHistory entity)
+        public Task UpdateAsync(int userId, BalanceHistory entity, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

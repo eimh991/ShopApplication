@@ -15,7 +15,7 @@ namespace Shop.Controllers
             _userService = userService;
         }
         [HttpPost]
-        public async Task<ActionResult> Login(LoginUserDTO loginUserDTO)
+        public async Task<ActionResult> Login(LoginUserDTO loginUserDTO, CancellationToken cancellationToken)
         {
             /*
             var token = await ((UserService)_userService).Login(loginUserDTO.Email, loginUserDTO.Password);
@@ -25,7 +25,7 @@ namespace Shop.Controllers
             */
             Console.WriteLine("Авторизация: " + loginUserDTO.Email);
 
-            var token = await _userService.Login(loginUserDTO.Email, loginUserDTO.Password);
+            var token = await _userService.Login(loginUserDTO.Email, loginUserDTO.Password , cancellationToken);
 
             HttpContext.Response.Cookies.Append("test-cookie", token, new CookieOptions
             {

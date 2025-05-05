@@ -15,7 +15,7 @@ namespace Shop.Repositories
         {
             _context = context;
         }
-        public  async Task CreateAsync(User entity)
+        public  async Task CreateAsync(User entity, CancellationToken cancellationToken)
         {
             entity.Cart = new Cart();
 
@@ -23,7 +23,7 @@ namespace Shop.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == id);
             
@@ -38,7 +38,7 @@ namespace Shop.Repositories
 
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync(string search)
+        public async Task<IEnumerable<User>> GetAllAsync(string search, CancellationToken cancellationToken)
         {
             var users = await _context.Users
                 .AsNoTracking()
@@ -53,7 +53,7 @@ namespace Shop.Repositories
             return new List<User>() ;
         }
 
-        public async Task<User> GetByIdAsync(int id)
+        public async Task<User> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
             var user = await _context.Users
                 .AsNoTracking()
@@ -67,7 +67,7 @@ namespace Shop.Repositories
             return null;
         }
 
-        public async Task UpdateAsync(User entity)
+        public async Task UpdateAsync(User entity, CancellationToken cancellationToken)
         {
             await _context.Users
                 .Where(u => u.UserId == entity.UserId)
@@ -78,7 +78,7 @@ namespace Shop.Repositories
                 );
         }
 
-        public async Task<User> GetByEmailAsync(string email)
+        public async Task<User> GetByEmailAsync(string email, CancellationToken cancellationToken)
         {
             var user = await _context.Users
                 .AsNoTracking()
@@ -91,7 +91,7 @@ namespace Shop.Repositories
             return null;
         }
 
-        public async Task ChangeStatusAsync(int userId,string status)
+        public async Task ChangeStatusAsync(int userId,string status, CancellationToken cancellationToken)
         {
             var userRole = UserRole.User;
             if(UserRole.Admin.ToString().ToLower() == status.ToLower())
@@ -110,7 +110,7 @@ namespace Shop.Repositories
                     );
         }
 
-        public async Task<User> GetUserWithCartAsync(int userId)
+        public async Task<User> GetUserWithCartAsync(int userId, CancellationToken cancellationToken)
         {
             var user = await _context.Users
                 .AsNoTracking()
@@ -124,7 +124,7 @@ namespace Shop.Repositories
             return null;
         }
 
-        public async Task UpdateBalanceAsync(User entity)
+        public async Task UpdateBalanceAsync(User entity, CancellationToken cancellationToken)
         {
             await _context.Users
                 .Where(u => u.UserId == entity.UserId)
@@ -134,7 +134,7 @@ namespace Shop.Repositories
 
         }
 
-        public async Task<User> GetUserWithCartsItemAsync(int userId)
+        public async Task<User> GetUserWithCartsItemAsync(int userId, CancellationToken cancellationToken)
         {
             var user = await _context.Users
                 .Include(u => u.Cart)

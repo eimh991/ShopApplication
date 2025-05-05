@@ -4,6 +4,6 @@ namespace Shop.Interfaces
 {
     public interface ICategoryRepository
     {
-        Task<Category?> FindByCategoryTitleAsync(string title);
+        Task<Category?> FindByCategoryTitleAsync(string title , CancellationToken cancellationToken);
     }
 }

@@ -21,7 +21,7 @@ namespace Shop.Service.PaymentService
                 throw new PaymentException("Tinkoff Terminal key is missing");
             _httpClient = client;
         }
-        public async Task<PaymentResponseDto> CreatePaymentAsync(PaymentRequestDto requestDto)
+        public async Task<PaymentResponseDto> CreatePaymentAsync(PaymentRequestDto requestDto, CancellationToken cancellationToken)
         {
             var orderId =  Guid.NewGuid().ToString();
 
@@ -54,7 +54,7 @@ namespace Shop.Service.PaymentService
             return responseData;
         }
 
-        public async Task<bool> HandleWebhookAsync(WebhookDto webhookData)
+        public async Task<bool> HandleWebhookAsync(WebhookDto webhookData, CancellationToken cancellationToken)
         {
             Console.WriteLine($"Tinkoff Webhook: OrderId={webhookData.OrderId}, Status={webhookData.Status}");
             //если статус = "CONFIRMED" то платеж совершен и подтвержденн.

@@ -4,7 +4,7 @@ namespace Shop.Interfaces
 {
     public interface IPaymentService
     {
-        Task<PaymentResponseDto> CreatePaymentAsync(PaymentRequestDto requestDto);
-        Task<bool> HandleWebhookAsync(WebhookDto webhookData);
+        Task<PaymentResponseDto> CreatePaymentAsync(PaymentRequestDto requestDto, CancellationToken cancellationToken);
+        Task<bool> HandleWebhookAsync(WebhookDto webhookData , CancellationToken cancellationToken);
     }
 }

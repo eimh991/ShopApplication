@@ -13,20 +13,20 @@ namespace Shop.Repositories
         {
             _context = context;
         }
-        public async Task CreateAsync(Category entity)
+        public async Task CreateAsync(Category entity, CancellationToken cancellationToken)
         {
             _context.Categories.Attach(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
              await _context.Categories
                 .Where(c=>c.CategoryId == id)
                 .ExecuteDeleteAsync();
         }
 
-        public async Task<IEnumerable<Category>> GetAllAsync(string search)
+        public async Task<IEnumerable<Category>> GetAllAsync(string search, CancellationToken cancellationToken)
         {
             var cat =  await _context.Categories
                 .AsNoTracking()
@@ -36,7 +36,7 @@ namespace Shop.Repositories
             return cat;
         }
 
-        public async Task<Category> GetByIdAsync(int id)
+        public async Task<Category> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
             var category = await _context.Categories
                 .AsNoTracking()
@@ -44,7 +44,7 @@ namespace Shop.Repositories
             return category ?? null;
         }
 
-        public async Task UpdateAsync(Category entity)
+        public async Task UpdateAsync(Category entity, CancellationToken cancellationToken)
         {
             await _context.Categories
                 .Where(c => c.CategoryId == entity.CategoryId)
@@ -53,7 +53,7 @@ namespace Shop.Repositories
                 );
         }
         
-        public async Task<Category?> FindByCategoryTitleAsync(string title)
+        public async Task<Category?> FindByCategoryTitleAsync(string title, CancellationToken cancellationToken)
         {
             string normalizedTitle = title.ToLower();
 

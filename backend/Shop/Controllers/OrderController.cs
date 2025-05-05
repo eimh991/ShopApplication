@@ -20,20 +20,20 @@ namespace Shop.Controllers
             _userService = userService;
         }
         [HttpPost]
-        public async Task<IActionResult> CreateOrder([FromQuery] int userId)
+        public async Task<IActionResult> CreateOrder([FromQuery] int userId, CancellationToken cancellationToken)
         {
-            var items = await ((UserService)_userService).GetUserCartItemsAsync(userId);
+            var items = await ((UserService)_userService).GetUserCartItemsAsync(userId, cancellationToken);
             if (items != null &&  items != Enumerable.Empty<CartItem>())
             {
-                await _orderService.CreateOrderAsync(userId, items);
+                await _orderService.CreateOrderAsync(userId, items,cancellationToken);
                 return Ok();
             }
             return BadRequest("У вас нету товаров в корзине, вы не можете создать заказ");
         }
         [HttpGet("id")]
-        public async Task<ActionResult<Order>>GetOrderAsync(int userId, int entityId)
+        public async Task<ActionResult<Order>>GetOrderAsync(int userId, int entityId, CancellationToken cancellationToken)
         {
-            var order = await _orderService.GetOrderByIdAsync(userId, entityId);
+            var order = await _orderService.GetOrderByIdAsync(userId, entityId, cancellationToken);
             if(order != null)
             {
                 return Ok(order);
@@ -42,9 +42,9 @@ namespace Shop.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<OrderDTO>>> GetAllOrderAsync(int userId)
+        public async Task<ActionResult<IEnumerable<OrderDTO>>> GetAllOrderAsync(int userId, CancellationToken cancellationToken)
         {
-            var ordersDTO = await ((OrderService)_orderService).GetAllOrdersDTOAsync(userId);
+            var ordersDTO = await ((OrderService)_orderService).GetAllOrdersDTOAsync(userId, cancellationToken);
             if (ordersDTO != null)
             {
                 return Ok(ordersDTO);
@@ -54,9 +54,9 @@ namespace Shop.Controllers
 
         [HttpDelete("id")]
         [AuthorizeRole(UserRole.Admin)]
-        public async Task<IActionResult> DeleteOrderAsync(int entityId)
+        public async Task<IActionResult> DeleteOrderAsync(int entityId, CancellationToken cancellationToken)
         {
-             await _orderService.DeleteOrderAsync(entityId);
+             await _orderService.DeleteOrderAsync(entityId, cancellationToken);
             return Ok();
          
         }
