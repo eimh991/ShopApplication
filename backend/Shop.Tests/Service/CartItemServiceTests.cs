@@ -40,14 +40,14 @@ namespace Shop.Tests.Service
         {
             //Arrange
             int userId = 1;
-            _cartItemCleanerMock.Setup(cl=>cl.DeleteAllCartItemsAsync(userId)).Returns(Task.CompletedTask);
+            _cartItemCleanerMock.Setup(cl=>cl.DeleteAllCartItemsAsync(userId, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
             //Act
-            await _cartItemSercive.ClearAllCartItemsAsync(userId);
+            await _cartItemSercive.ClearAllCartItemsAsync(userId, CancellationToken.None);
 
             //Assert
 
-            _cartItemCleanerMock.Verify(cl=>cl.DeleteAllCartItemsAsync(userId), Times.Once());
+            _cartItemCleanerMock.Verify(cl=>cl.DeleteAllCartItemsAsync(userId, It.IsAny<CancellationToken>()), Times.Once());
         }
 
         [Fact]
@@ -62,22 +62,22 @@ namespace Shop.Tests.Service
                 { CartId = 10 }
             };
 
-            _productRepositoryMock.Setup(pr=>pr.GetByIdAsync(dto.ProductId))
+            _productRepositoryMock.Setup(pr=>pr.GetByIdAsync(dto.ProductId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(product);
 
-            _additionalRepositoryMock.Setup(addRep=>addRep.GetUserWithCartAsync(dto.UserId))
+            _additionalRepositoryMock.Setup(addRep=>addRep.GetUserWithCartAsync(dto.UserId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(user);
 
-            _cartItemExtendedRepositoryMock.Setup(ext => ext.AddAsyncAndReturnCartItemId(dto.UserId, It.IsAny<CartItem>()))
+            _cartItemExtendedRepositoryMock.Setup(ext => ext.AddAsyncAndReturnCartItemId(dto.UserId, It.IsAny<CartItem>(), It.IsAny<CancellationToken>()))
                .ReturnsAsync(42);
 
             //Act
-            var result = await _cartItemSercive.CreateCartItemAsync(dto);
+            var result = await _cartItemSercive.CreateCartItemAsync(dto, CancellationToken.None);
 
             //Assert
             Assert.Equal(42, result);
 
-            _cartItemExtendedRepositoryMock.Verify(ext=>ext.AddAsyncAndReturnCartItemId(dto.UserId,It.IsAny<CartItem>())
+            _cartItemExtendedRepositoryMock.Verify(ext=>ext.AddAsyncAndReturnCartItemId(dto.UserId,It.IsAny<CartItem>(), It.IsAny<CancellationToken>())
                 ,Times.Once());
         }
 
@@ -87,14 +87,14 @@ namespace Shop.Tests.Service
             //Arrange
             int cartItemId = 5;
 
-            _cartItemRepositoryMock.Setup(r=>r.DeleteAsync(cartItemId))
+            _cartItemRepositoryMock.Setup(r=>r.DeleteAsync(cartItemId, It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
             //Act
-            await _cartItemSercive.DeleteCartItemAsync(cartItemId);
+            await _cartItemSercive.DeleteCartItemAsync(cartItemId, CancellationToken.None);
 
             //Assert
-            _cartItemRepositoryMock.Verify(r=>r.DeleteAsync(cartItemId), Times.Once()); 
+            _cartItemRepositoryMock.Verify(r=>r.DeleteAsync(cartItemId, It.IsAny<CancellationToken>()), Times.Once()); 
         }
 
         [Fact]
@@ -113,11 +113,11 @@ namespace Shop.Tests.Service
                 }
             };
 
-            _cartItemRepositoryMock.Setup(r=>r.GetAllAsync(userId))
+            _cartItemRepositoryMock.Setup(r=>r.GetAllAsync(userId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(cartItems);
 
             //Act
-            var result = await _cartItemSercive.GetAllCartItemsAsync(userId);
+            var result = await _cartItemSercive.GetAllCartItemsAsync(userId, It.IsAny<CancellationToken>());
 
             //Assert
 
@@ -131,14 +131,14 @@ namespace Shop.Tests.Service
             //Arrange
             int id = 10, quantity = 5;
             _cartItemExtendedRepositoryMock.Setup(ext => ext.UpdateQuantityAsync
-                                (It.Is<CartItem>(c=>c.CartItemId == id && c.Quantity == quantity)))
+                                (It.Is<CartItem>(c=>c.CartItemId == id && c.Quantity == quantity), It.IsAny<CancellationToken>()))
                                 .Returns(Task.CompletedTask);
 
             //Act
-            await _cartItemSercive.UpdateCountCartItemsAsync(id, quantity);
+            await _cartItemSercive.UpdateCountCartItemsAsync(id, quantity, CancellationToken.None);
 
             //Assert
-            _cartItemExtendedRepositoryMock.Verify(ext => ext.UpdateQuantityAsync(It.IsAny<CartItem>()), Times.Once);
+            _cartItemExtendedRepositoryMock.Verify(ext => ext.UpdateQuantityAsync(It.IsAny<CartItem>(), It.IsAny<CancellationToken>()), Times.Once);
                                    
         }
 
@@ -148,11 +148,11 @@ namespace Shop.Tests.Service
             //Arrange
             int userId = 1;
             var expectedList = new List<CartProductDTO> { new CartProductDTO { } };
-            _cartItemExtendedRepositoryMock.Setup(ext => ext.GetAllCartProductAsync(userId))
+            _cartItemExtendedRepositoryMock.Setup(ext => ext.GetAllCartProductAsync(userId, It.IsAny<CancellationToken>()))
                                 .ReturnsAsync(expectedList);
 
             //Act
-            var result = await _cartItemSercive.GetAllCartProductAsync(userId);
+            var result = await _cartItemSercive.GetAllCartProductAsync(userId, CancellationToken.None);
 
             //Assert
             Assert.Single(result);

@@ -48,7 +48,7 @@ namespace Shop.Tests.Service
                 PasswordHash = passwordHash,
             };
 
-            _mockUserAdditionalRepository.Setup(repo => repo.GetByEmailAsync(email))
+            _mockUserAdditionalRepository.Setup(repo => repo.GetByEmailAsync(email, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(user);
 
             _mockPasswordHasher.Setup(hasher => hasher.Verify(password, passwordHash))
@@ -58,7 +58,7 @@ namespace Shop.Tests.Service
                 .Returns("mocked-jwt-token");
 
             // Act
-            var token = await _userService.Login(email, password);
+            var token = await _userService.Login(email, password, CancellationToken.None);
 
             //Assert
 
@@ -77,14 +77,14 @@ namespace Shop.Tests.Service
                 PasswordHash = "hashepassword"
             };
 
-            _mockUserAdditionalRepository.Setup(repo => repo.GetByEmailAsync(email))
+            _mockUserAdditionalRepository.Setup(repo => repo.GetByEmailAsync(email, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(user);
 
             _mockPasswordHasher.Setup(hasher => hasher.Verify(password, user.PasswordHash))
                 .Returns(false);
 
             //Act/Assert
-            var exception = await Assert.ThrowsAsync<Exception>(() => _userService.Login(email, password));
+            var exception = await Assert.ThrowsAsync<Exception>(() => _userService.Login(email, password, It.IsAny<CancellationToken>()));
             Assert.Equal("Некорректный логин или пароль", exception.Message);
         }
         [Fact]
@@ -94,11 +94,11 @@ namespace Shop.Tests.Service
             var email = "nonexisten@example.com";
             var password = "password";
 
-            _mockUserAdditionalRepository.Setup(r => r.GetByEmailAsync(email))
+            _mockUserAdditionalRepository.Setup(r => r.GetByEmailAsync(email, It.IsAny<CancellationToken>()))
                 .ReturnsAsync((User)null);
 
             //Act & Assert
-            var exception = await Assert.ThrowsAsync<Exception>(()=> _userService.Login(email, password));
+            var exception = await Assert.ThrowsAsync<Exception>(()=> _userService.Login(email, password, It.IsAny<CancellationToken>()));
             Assert.Equal("Нет такого пользователя", exception.Message);
 
         }
@@ -110,14 +110,14 @@ namespace Shop.Tests.Service
             //Arrange
             var userId = 1;
             var status = "Manager";
-            _mockUserAdditionalRepository.Setup(r=>r.ChangeStatusAsync(userId, status))
+            _mockUserAdditionalRepository.Setup(r=>r.ChangeStatusAsync(userId, status, It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
             //Act
-            await _userService.ChangeStatusAsync(userId, status);
+            await _userService.ChangeStatusAsync(userId, status, CancellationToken.None);
 
             //Assert
-            _mockUserAdditionalRepository.Verify(r=>r.ChangeStatusAsync(userId,status), Times.Once());  
+            _mockUserAdditionalRepository.Verify(r=>r.ChangeStatusAsync(userId,status, It.IsAny<CancellationToken>()), Times.Once());  
         }
 
         [Fact]
@@ -128,11 +128,11 @@ namespace Shop.Tests.Service
             var invalidstatus = "UnCorrectStatus";
 
             //Act
-            await _userService.ChangeStatusAsync(userId, invalidstatus);
+            await _userService.ChangeStatusAsync(userId, invalidstatus, CancellationToken.None);
 
             //Assert
             _mockUserAdditionalRepository.Verify(r=>r.
-                            ChangeStatusAsync(It.IsAny<int>(), It.IsAny<string>()),Times.Never());
+                            ChangeStatusAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),Times.Never());
 
         }
 
@@ -149,10 +149,10 @@ namespace Shop.Tests.Service
             };
             
             //Act
-            await _userService.CreateAsync(userDTO);
+            await _userService.CreateAsync(userDTO, CancellationToken.None);
 
             //Assert
-            _mockUserRepository.Verify(r=>r.CreateAsync(It.IsAny<User>()), Times.Once());
+            _mockUserRepository.Verify(r=>r.CreateAsync(It.IsAny<User>(),It.IsAny<CancellationToken>()), Times.Once());
 
 
         }
@@ -164,13 +164,13 @@ namespace Shop.Tests.Service
             //Arrange
             var userId = 1;
 
-            _mockUserRepository.Setup(r=>r.DeleteAsync(userId)).Returns(Task.CompletedTask);
+            _mockUserRepository.Setup(r=>r.DeleteAsync(userId, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
             //Act
-            await _userService.DeleteAsync(userId);
+            await _userService.DeleteAsync(userId, CancellationToken.None);
 
             ////Assert
-            _mockUserRepository.Verify(r=>r.DeleteAsync(userId), Times.Once());
+            _mockUserRepository.Verify(r=>r.DeleteAsync(userId, It.IsAny<CancellationToken>()), Times.Once());
 
         }
 
@@ -186,11 +186,11 @@ namespace Shop.Tests.Service
                 Email = "test@example.com",
             };
 
-            _mockUserRepository.Setup(r => r.GetByIdAsync(userId))
+            _mockUserRepository.Setup(r => r.GetByIdAsync(userId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(user);
 
             //Act
-            var result = await _userService.GetByIdAsync(userId);
+            var result = await _userService.GetByIdAsync(userId, CancellationToken.None);
 
             //Assert
             Assert.NotNull(result);
@@ -202,11 +202,11 @@ namespace Shop.Tests.Service
         {
             // Arrange
             var userId = 1;
-            _mockUserRepository.Setup(r => r.GetByIdAsync(userId))
+            _mockUserRepository.Setup(r => r.GetByIdAsync(userId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync((User)null);
 
             //Act
-            var result = await _userService.GetByIdAsync(userId);
+            var result = await _userService.GetByIdAsync(userId, CancellationToken.None);
 
             //Assert
             Assert.Null(result);
@@ -223,10 +223,10 @@ namespace Shop.Tests.Service
                 UserName = "New user"
             };
 
-            _mockUserAdditionalRepository.Setup(r=>r.GetByEmailAsync(email)).ReturnsAsync(user);
+            _mockUserAdditionalRepository.Setup(r=>r.GetByEmailAsync(email, It.IsAny<CancellationToken>())).ReturnsAsync(user);
 
             //Act 
-            var result = await _userService.GetByEmaiAsync(email);
+            var result = await _userService.GetByEmaiAsync(email, CancellationToken.None);
 
             //Assert
             Assert.NotNull(result);
@@ -239,11 +239,11 @@ namespace Shop.Tests.Service
             //Arrange
             var email = "noneexist@example.com";
 
-            _mockUserAdditionalRepository.Setup(r => r.GetByEmailAsync(email))
+            _mockUserAdditionalRepository.Setup(r => r.GetByEmailAsync(email, It.IsAny<CancellationToken>()))
                 .ReturnsAsync((User)null);
 
             //Act
-            var result = await _userService.GetByEmaiAsync(email);
+            var result = await _userService.GetByEmaiAsync(email, CancellationToken.None);
 
             //Assert
             Assert.Null(result);
@@ -261,13 +261,13 @@ namespace Shop.Tests.Service
                 Password = "newpassword123"
             };
 
-            _mockUserRepository.Setup(r => r.UpdateAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
+            _mockUserRepository.Setup(r => r.UpdateAsync(It.IsAny<User>(),It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
             // Act
-            await _userService.UpdateAsync(userDto);
+            await _userService.UpdateAsync(userDto, CancellationToken.None);
 
             // Assert
-            _mockUserRepository.Verify(r => r.UpdateAsync(It.IsAny<User>()), Times.Once());
+            _mockUserRepository.Verify(r => r.UpdateAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()), Times.Once());
         }
 
         [Fact]
@@ -292,11 +292,11 @@ namespace Shop.Tests.Service
                 }
             };
 
-            _mockUserAdditionalRepository.Setup(r=>r.GetUserWithCartsItemAsync(userId))
+            _mockUserAdditionalRepository.Setup(r=>r.GetUserWithCartsItemAsync(userId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(user);
 
             //Act
-            var result = await _userService.GetUserCartItemsAsync(userId);
+            var result = await _userService.GetUserCartItemsAsync(userId, CancellationToken.None);
 
             //Assert
             Assert.NotNull(result);
@@ -308,11 +308,11 @@ namespace Shop.Tests.Service
         {
             // Arrange
             var userId = 1;
-            _mockUserAdditionalRepository.Setup(r => r.GetUserWithCartsItemAsync(userId))
+            _mockUserAdditionalRepository.Setup(r => r.GetUserWithCartsItemAsync(userId, It.IsAny<CancellationToken>()))
                     .ReturnsAsync((User)null);
 
             // Act
-            var result = await _userService.GetUserCartItemsAsync(userId);
+            var result = await _userService.GetUserCartItemsAsync(userId, CancellationToken.None);
 
             // Assert
             Assert.Empty(result);

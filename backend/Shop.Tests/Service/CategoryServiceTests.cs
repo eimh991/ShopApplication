@@ -32,10 +32,10 @@ namespace Shop.Tests.Service
             var dto = new CategoryDTO { CategoryTitle = "Books" };
 
             //Act
-            await _categoryService.CreateAsync(dto);
+            await _categoryService.CreateAsync(dto, CancellationToken.None);
 
             //Assert
-            _categoryRepositoryMock.Verify(r => r.CreateAsync(It.Is<Category>(c => c.CategoryName == dto.CategoryTitle)),
+            _categoryRepositoryMock.Verify(r => r.CreateAsync(It.Is<Category>(c => c.CategoryName == dto.CategoryTitle), It.IsAny<CancellationToken>()),
                 Times.Once);
         }
 
@@ -46,10 +46,10 @@ namespace Shop.Tests.Service
             int categoryId = 1;
 
             //Act
-            await _categoryService.DeleteAsync(categoryId);
+            await _categoryService.DeleteAsync(categoryId, CancellationToken.None);
 
             //Assert
-            _categoryRepositoryMock.Verify(r=>r.DeleteAsync(categoryId), Times.Once);   
+            _categoryRepositoryMock.Verify(r=>r.DeleteAsync(categoryId, It.IsAny<CancellationToken>()), Times.Once);   
         }
 
         [Fact]
@@ -61,11 +61,11 @@ namespace Shop.Tests.Service
                 new Category() { CategoryName = categoryName } 
             };
 
-            _categoryRepositoryMock.Setup(r=>r.GetAllAsync(categoryName))
+            _categoryRepositoryMock.Setup(r=>r.GetAllAsync(categoryName, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(categories);
 
             //Act
-            var result =  await _categoryService.GetAllAsync(categoryName);
+            var result =  await _categoryService.GetAllAsync(categoryName, CancellationToken.None);
 
             //Assert
             Assert.NotNull(result);
@@ -80,11 +80,11 @@ namespace Shop.Tests.Service
             int categoryId = 2;
             var category = new Category() { CategoryId = categoryId, CategoryName = "Fashion" };
 
-            _categoryRepositoryMock.Setup(r=>r.GetByIdAsync(categoryId))
+            _categoryRepositoryMock.Setup(r=>r.GetByIdAsync(categoryId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(category);
 
             //Act
-            var result = await _categoryService.GetByIdAsync(categoryId);
+            var result = await _categoryService.GetByIdAsync(categoryId, It.IsAny<CancellationToken>());
 
             //Assert
             Assert.Equal(categoryId,result.CategoryId);
@@ -98,11 +98,11 @@ namespace Shop.Tests.Service
             var dto = new CategoryDTO { CategoryTitle = "UpdatedTitle" };
 
             //Act
-            await _categoryService.UpdateAsync(dto);
+            await _categoryService.UpdateAsync(dto, CancellationToken.None);
 
             //Assert
             _categoryRepositoryMock.Verify(r=>r.UpdateAsync(
-                It.Is<Category>(c=>c.CategoryName == "UpdatedTitle")), Times.Once());   
+                It.Is<Category>(c=>c.CategoryName == "UpdatedTitle"), It.IsAny<CancellationToken>()), Times.Once());   
         }
 
         [Fact]
@@ -112,10 +112,10 @@ namespace Shop.Tests.Service
             string title = "Gadgets";
             var category = new Category { CategoryName = title };
 
-            _categoryRepoFindTitleMock.Setup(r=>r.FindByCategoryTitleAsync(title))
+            _categoryRepoFindTitleMock.Setup(r=>r.FindByCategoryTitleAsync(title, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(category);
             //Act
-            var result = await _categoryService.GetByTitleAsync(title);
+            var result = await _categoryService.GetByTitleAsync(title, CancellationToken.None);
 
             //Assert
             Assert.NotNull(result);
