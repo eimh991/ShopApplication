@@ -9,10 +9,12 @@ namespace Shop.Service
     {
         private readonly IRepository<Product> _productRepository;
         private readonly ICategoryRepository _categoryRepo;
-        public ProductService(IRepository<Product> productRepository, ICategoryRepository categoryRepo)
+        private readonly IProductExtendedRepository _productExtendedRepository;
+        public ProductService(IRepository<Product> productRepository, ICategoryRepository categoryRepo, IProductExtendedRepository productExtendedRepository)
         {
             _productRepository = productRepository;
             _categoryRepo = categoryRepo;
+            _productExtendedRepository = productExtendedRepository;
         }
         public async Task CreateAsync(ProductRequestDTO entity, CancellationToken cancellationToken)
         {
@@ -44,7 +46,7 @@ namespace Shop.Service
             int page, string sortOrder, string categoryName, CancellationToken cancellationToken)
         {
            var categoryId = await GetCategoryIdByCategoryNameAsync(categoryName,cancellationToken);
-            var products = await ((ProductRepository)_productRepository).GetAllPaginateAsync(search, paginateSize, 
+            var products = await _productExtendedRepository.GetAllPaginateAsync(search, paginateSize, 
                     page, sortOrder,categoryId,cancellationToken);
             return ConvertProductToProductResponceDTO(products);
 
@@ -83,7 +85,7 @@ namespace Shop.Service
                     ProductId = entity.ProductId,
                     Price = entity.Price,
                 };
-                 await ((ProductRepository)_productRepository).ChangePriceAsync(product, cancellationToken);
+                 await _productExtendedRepository.ChangePriceAsync(product, cancellationToken);
             }
             
         }
@@ -97,14 +99,14 @@ namespace Shop.Service
                     ProductId = entity.ProductId,
                     Stock = entity.Stock,
                 };
-                await ((ProductRepository)_productRepository).ChangeQuantityProductAsync(product, cancellationToken);
+                await _productExtendedRepository.ChangeQuantityProductAsync(product, cancellationToken);
             }
 
         }
 
         public async Task<IEnumerable<ProductResponceDTO>> GetLastProductsAsync(CancellationToken cancellationToken)
         {
-            var products = await ((ProductRepository)_productRepository).GetLastProductsAsync(cancellationToken);
+            var products = await _productExtendedRepository.GetLastProductsAsync(cancellationToken);
             return ConvertProductToProductResponceDTO(products);
 
         }
@@ -116,7 +118,7 @@ namespace Shop.Service
                 ProductId = entity.ProductId,
                 ImagePath = CheckingProductPictures(GenerateImagePath(entity.Image).Result),
             };
-            await ((ProductRepository)_productRepository).ChangeImagePathProductAsync(product, cancellationToken);
+            await _productExtendedRepository.ChangeImagePathProductAsync(product, cancellationToken);
 
         }
 

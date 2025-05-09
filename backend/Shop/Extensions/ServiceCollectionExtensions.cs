@@ -46,6 +46,7 @@ namespace Shop.Extensions
             services.AddScoped<IUserBalanceUpdater,UserRepository>();
             services.AddScoped<IUserAdditionalRepository, UserRepository>();
             services.AddScoped<ICartItemExtendedRepository, CartItemRepository>();
+            services.AddScoped<IProductExtendedRepository, ProductRepository>();
 
             services.AddHttpClient<QiwiPaymentService>();
             services.AddHttpClient<TinkoffPaymentService>();

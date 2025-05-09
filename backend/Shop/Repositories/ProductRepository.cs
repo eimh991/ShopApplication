@@ -6,7 +6,7 @@ using Shop.Model;
 
 namespace Shop.Repositories
 {
-    public class ProductRepository : IRepository<Product>
+    public class ProductRepository : IRepository<Product>, IProductExtendedRepository
     {
         private readonly AppDbContext _context;
         public ProductRepository(AppDbContext context) {
