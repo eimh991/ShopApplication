@@ -7,7 +7,7 @@ namespace Shop.Interfaces
     {
         Task CreateAsync(UserDTO entity, CancellationToken cancellationToken);
         Task UpdateAsync(UserDTO entity, CancellationToken cancellationToken);
-        Task<User> GetByIdAsync(int id, CancellationToken cancellationToken);
+        Task<UserDTO> GetByIdAsync(int id, CancellationToken cancellationToken);
         Task<IEnumerable<User>> GetAllAsync(string search , CancellationToken cancellationToken);
         Task DeleteAsync(int id , CancellationToken cancellationToken);
         Task<User> GetByEmaiAsync(string email, CancellationToken cancellationToken);

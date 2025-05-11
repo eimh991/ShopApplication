@@ -65,9 +65,11 @@ namespace Shop.Service
              return await _userAdditionalRepository.GetByEmailAsync(email, cancellationToken);
         }
 
-        public async Task<User> GetByIdAsync(int id , CancellationToken cancellationToken)
+        public async Task<UserDTO> GetByIdAsync(int id , CancellationToken cancellationToken)
         {
-            return await _userRepository.GetByIdAsync(id, cancellationToken);
+            var user =  await _userRepository.GetByIdAsync(id, cancellationToken);
+
+            return ConvertUserToUserDTO(user);
         }
 
         public async Task UpdateAsync(UserDTO entity , CancellationToken cancellationToken)
@@ -113,6 +115,17 @@ namespace Shop.Service
                 return user.Cart.CartItems;
             }
             return Enumerable.Empty<CartItem>();
+        }
+
+        private UserDTO ConvertUserToUserDTO(User user)
+        {
+            return new UserDTO
+            {
+                UserName = user.UserName,
+                Email = user.Email,
+                UserId = user.UserId,
+                Balance = user.Balance,
+            };
         }
 
     }
