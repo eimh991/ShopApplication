@@ -119,6 +119,8 @@ namespace Shop.Service
 
         private UserDTO ConvertUserToUserDTO(User user)
         {
+            if (user == null) return null;
+
             return new UserDTO
             {
                 UserName = user.UserName,
