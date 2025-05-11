@@ -141,7 +141,7 @@ namespace Shop.Service
                         OrderDate = order.OrderDate,
                         TotalAmount = order.TotalAmount,
                         OrderId = order.OrderId,
-                        orderItemDTOs = order.OrderItems.Select(item => new OrderItemDTO{
+                        OrderItemDTOs = order.OrderItems.Select(item => new OrderItemDTO{
                             OrderItemId = item.OrderItemId,
                             Price = item.Product.Price,
                             ProductImageUrl = item.Product.ImagePath,

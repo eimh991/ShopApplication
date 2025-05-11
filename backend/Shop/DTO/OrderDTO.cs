@@ -6,6 +6,6 @@
         public DateTime OrderDate { get; set; }
         public decimal TotalAmount { get; set; }
 
-        public List<OrderItemDTO> orderItemDTOs { get; set; } = new List<OrderItemDTO>();
+        public List<OrderItemDTO> OrderItemDTOs { get; set; } = new List<OrderItemDTO>();
     }
 }
