@@ -105,7 +105,13 @@ const CartPage = () => {
         </div>
       )}
       {cartProducts.length === 0 ? (
-        <p>Ваша корзина пуста.</p>
+      <div className="d-flex justify-content-center align-items-center" style={{ height: '300px' }}>
+        <div className="card text-center p-4 shadow" style={{ maxWidth: '400px' }}>
+          <div style={{ fontSize: '3rem' }}>🛒</div>
+          <h4 className="mt-3">Ваша корзина пуста</h4>
+          <p className="text-muted">Добавьте товары, чтобы увидеть их здесь.</p>
+        </div>
+      </div>
       ) : (
         <>
           {cartProducts.map((product) => (
