@@ -41,14 +41,14 @@ namespace Shop.Repositories
 
         public async Task<TopUpCode> CreateNewCodeAsync(TopUpAmount amount, CancellationToken cancellationToken)
         {
-            var code = GenerateUniqueCode(); // метод для генерации строки
+            var code = GenerateUniqueCode(); 
             var newCode = new TopUpCode
             {
                 Code = code,
                 Amount = amount,
                 IsUsed = false
             };
-            await _context.TopUpCodes.AddAsync(newCode);
+            await _context.TopUpCodes.AddAsync(newCode, cancellationToken);
             return newCode;
         }
 

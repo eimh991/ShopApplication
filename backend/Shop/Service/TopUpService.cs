@@ -1,4 +1,6 @@
-﻿using Shop.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Shop.Enum;
+using Shop.Interfaces;
 using Shop.Model;
 
 namespace Shop.Service
@@ -47,6 +49,18 @@ namespace Shop.Service
             await _userBalanceUpdater.UpdateBalanceAsync(user, cancellationToken);
 
             return true;
+        }
+
+        public async Task<string> CreateTopUpCodeAsync(int amountValue, CancellationToken cancellationToken)
+        {
+            if (!System.Enum.IsDefined(typeof(TopUpAmount), amountValue))
+                throw new ArgumentException($"Недопустимая сумма пополнения: {amountValue}");
+
+            var amount = (TopUpAmount)amountValue;
+
+            var newCode = await _codeRepo.CreateNewCodeAsync(amount, cancellationToken);
+
+            return newCode.Code;
         }
     }
 }
