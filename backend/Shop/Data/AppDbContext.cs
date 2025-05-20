@@ -6,7 +6,7 @@ namespace Shop.Data
 {
     public class AppDbContext : DbContext 
     {
-
+        
         public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -14,6 +14,9 @@ namespace Shop.Data
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<BalanceHistory> BalanceHistorys { get; set; }
+        public DbSet<TopUpCode> TopUpCodes { get; set; }
+
+
 
 
         private readonly  IConfiguration _configuration;
@@ -37,6 +40,7 @@ namespace Shop.Data
             modelBuilder.ApplyConfiguration(new CartConfiguration());
             modelBuilder.ApplyConfiguration(new BalanceHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new TopUpCodeConfiguration());
             base.OnModelCreating(modelBuilder);
         }
     }

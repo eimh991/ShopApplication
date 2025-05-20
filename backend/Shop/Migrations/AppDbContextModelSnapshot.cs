@@ -210,6 +210,40 @@ namespace Shop.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("Shop.Model.TopUpCode", b =>
+                {
+                    b.Property<int>("TopUpCodeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TopUpCodeId"));
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("boolean");
+
+                    b.Property<int?>("UsedByUserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("TopUpCodeId");
+
+                    b.HasIndex("UsedByUserId");
+
+                    b.ToTable("TopUpCodes");
+                });
+
             modelBuilder.Entity("Shop.Model.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -326,6 +360,16 @@ namespace Shop.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Shop.Model.TopUpCode", b =>
+                {
+                    b.HasOne("Shop.Model.User", "UsedByUser")
+                        .WithMany()
+                        .HasForeignKey("UsedByUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("UsedByUser");
                 });
 
             modelBuilder.Entity("Shop.Model.Cart", b =>

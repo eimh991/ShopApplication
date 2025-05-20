@@ -34,6 +34,8 @@ namespace Shop.Extensions
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ICartItemService, CartItemSercive>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<ITopUpService, TopUpService>(); 
+            services.AddScoped<IBalanceHistoryService, BalanceHistoryService>();
             
 
             services.AddScoped<IRepository<User>, UserRepository>();
@@ -42,11 +44,13 @@ namespace Shop.Extensions
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IRepositoryWithUser<CartItem>, CartItemRepository>();
             services.AddScoped<IRepositoryWithUser<Shop.Model.Order>, OrderRepository>();
+            services.AddScoped<IRepositoryWithUser<BalanceHistory>, BalanceHistoryRepository>();
             services.AddScoped<ICartItemCleaner, CartItemRepository>();
             services.AddScoped<IUserBalanceUpdater,UserRepository>();
             services.AddScoped<IUserAdditionalRepository, UserRepository>();
             services.AddScoped<ICartItemExtendedRepository, CartItemRepository>();
             services.AddScoped<IProductExtendedRepository, ProductRepository>();
+            services.AddScoped<ITopUpCodeRepository, TopUpCodeRepository>();
 
             services.AddHttpClient<QiwiPaymentService>();
             services.AddHttpClient<TinkoffPaymentService>();
