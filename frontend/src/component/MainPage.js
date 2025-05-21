@@ -2,15 +2,16 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ProductCard from './ProductCard';
 
+
 const MainPage = () => {
   const [products, setProducts] = useState([]);
 
-  useEffect(() => {
-    // Загрузка списка продуктов с сервера
+    useEffect(() => {
     axios.get('https://localhost:5260/api/products')
       .then((response) => setProducts(response.data))
       .catch((error) => console.error('Error fetching products:', error));
   }, []);
+
 
   return (
     <div>

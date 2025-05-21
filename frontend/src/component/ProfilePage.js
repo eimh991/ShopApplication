@@ -1,20 +1,24 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FaUser, FaEnvelope, FaCoins, FaUserShield } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const [userRole, setUserRole] = useState(null);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
         const authResponse = await axios.get('https://localhost:5260/api/User/getme');
         const userId = authResponse.data.id;
+        setUserRole(authResponse.data.role);
 
         const userResponse = await axios.get(`https://localhost:5260/api/User/${userId}`);
         setUser(userResponse.data);
+        console.log(userRole)
       } catch (error) {
         console.error('Ошибка при загрузке данных пользователя:', error);
       } finally {
@@ -24,6 +28,10 @@ const ProfilePage = () => {
 
     fetchUserProfile();
   }, []);
+
+   const handleCreateProduct = () => {
+    navigate('/create-product');
+  };
 
   if (loading) {
     return <div className="text-center mt-5">Загрузка...</div>;
@@ -56,6 +64,11 @@ const ProfilePage = () => {
           <Link to="/orders" className="btn btn-outline-secondary">
             Мои заказы
           </Link>
+          {(userRole === 'Admin' || userRole === 'Manager') && (
+            <button onClick={handleCreateProduct} className="btn btn-success">
+              ➕ Создать товар
+            </button>
+          )}
         </div>
       </div>
     </div>

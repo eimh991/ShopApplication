@@ -18,15 +18,15 @@ const App = () => {
       <BrowserRouter>
           <Navbar />
           <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/auth" element={<AuthPage />} />
-              <Route path="/register" element={<RegistrationPage />} />
+              <Route path="/" element={<HomePage/>} />
+              <Route path="/auth" element={<AuthPage/>} />
+              <Route path="/register" element={<RegistrationPage/>} />
               <Route path="/cart" element={<CartPage/>} />
               <Route path="/search" element={<div>Поиск</div>} />
-              <Route path="/" element={<MainPage />} />
+              <Route path="/" element={<MainPage/>} />
               <Route path="/product/:id" element={<ProductDetails/>} />
-              <Route path="/products" element={<AllProductsPage />} />
-              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/products" element={<AllProductsPage/>} />
+              <Route path="/profile" element={<ProfilePage/>} />
               <Route path="/orders" element={<OrdersPage/>} />
           </Routes>
           <Footer />
