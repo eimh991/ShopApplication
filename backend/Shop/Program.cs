@@ -5,10 +5,15 @@ using Microsoft.OpenApi.Models;
 using Shop.Extensions;
 using Shop.Infrastructure;
 using Shop.Service.PaymentService;
+using System.Globalization;
 
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+var cultureInfo = new CultureInfo("en-US");
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 // Add services to the container.
 /*

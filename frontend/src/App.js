@@ -11,6 +11,7 @@ import OrdersPage from './component/OrderPage';
 import AllProductsPage from './component/AllProductsPage';
 import CartPage from './component/CartPage';
 import ProfilePage from './component/ProfilePage';
+import CreateProductPage from './component/CreateProductPage';
 
 const App = () => {
   return (
@@ -28,6 +29,7 @@ const App = () => {
               <Route path="/products" element={<AllProductsPage/>} />
               <Route path="/profile" element={<ProfilePage/>} />
               <Route path="/orders" element={<OrdersPage/>} />
+              <Route path="/create-product" element={<CreateProductPage />} />
           </Routes>
           <Footer />
       </BrowserRouter>
