@@ -28,7 +28,7 @@ const CreateProductPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!name || !categoryTitle || !description || !price || !stock || !image) {
+    if (!name || !categoryTitle || !description || !price || !stock) {
       alert('Пожалуйста, заполните все поля');
       return;
     }

@@ -155,7 +155,7 @@ namespace Shop.Service
                 Directory.CreateDirectory(uploadFolderPath);
             }
             var guid = Guid.NewGuid();
-            if (file.Length > 0)
+            if (file != null && file.Length > 0)
             {
                 var fp = file.FileName.Split('.');
                 var imageFileName = guid.ToString() + "." + fp[fp.Length - 1];

@@ -10,6 +10,6 @@
 
         public string CategoryTitle { get; set; }
 
-        public IFormFile Image { get; set; }
+        public IFormFile? Image { get; set; }
     }
 }
