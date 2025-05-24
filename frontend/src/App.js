@@ -12,6 +12,7 @@ import AllProductsPage from './component/AllProductsPage';
 import CartPage from './component/CartPage';
 import ProfilePage from './component/ProfilePage';
 import CreateProductPage from './component/CreateProductPage';
+import DeleteProductsPage from './component/DeleteProductsPage';
 
 const App = () => {
   return (
@@ -20,16 +21,17 @@ const App = () => {
           <Navbar />
           <Routes>
               <Route path="/" element={<HomePage/>} />
-              <Route path="/auth" element={<AuthPage/>} />
-              <Route path="/register" element={<RegistrationPage/>} />
-              <Route path="/cart" element={<CartPage/>} />
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="/register" element={<RegistrationPage />} />
+              <Route path="/cart" element={<CartPage />} />
               <Route path="/search" element={<div>Поиск</div>} />
-              <Route path="/" element={<MainPage/>} />
-              <Route path="/product/:id" element={<ProductDetails/>} />
-              <Route path="/products" element={<AllProductsPage/>} />
+              <Route path="/" element={<MainPage />} />
+              <Route path="/product/:id" element={<ProductDetails />} />
+              <Route path="/products" element={<AllProductsPage />} />
               <Route path="/profile" element={<ProfilePage/>} />
               <Route path="/orders" element={<OrdersPage/>} />
               <Route path="/create-product" element={<CreateProductPage />} />
+              <Route path="/admin/delete-products" element={<DeleteProductsPage />} />
           </Routes>
           <Footer />
       </BrowserRouter>

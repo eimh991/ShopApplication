@@ -65,9 +65,14 @@ const ProfilePage = () => {
             Мои заказы
           </Link>
           {(userRole === 'Admin' || userRole === 'Manager') && (
-            <button onClick={handleCreateProduct} className="btn btn-success">
+          <>
+            <button onClick={handleCreateProduct} className="btn btn-success me-2">
               ➕ Создать товар
             </button>
+            <Link to="/admin/delete-products" className="btn btn-danger">
+              🗑️ Удалить товар
+            </Link>
+          </>
           )}
         </div>
       </div>
