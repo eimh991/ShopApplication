@@ -78,6 +78,11 @@ const ProfilePage = () => {
             </Link>
           </>
           )}
+          {userRole === 'Admin' && (
+            <Link to="/admin/change-role" className="btn btn-warning">
+              🛠️ Сменить роль пользователя
+            </Link>
+          )}
         </div>
       </div>
     </div>

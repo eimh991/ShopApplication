@@ -13,6 +13,7 @@ import CartPage from './component/CartPage';
 import ProfilePage from './component/ProfilePage';
 import CreateProductPage from './component/CreateProductPage';
 import DeleteProductsPage from './component/DeleteProductsPage';
+import ChangeUserRolePage from './component/ChangeUserRolePage';
 
 const App = () => {
   return (
@@ -32,6 +33,7 @@ const App = () => {
               <Route path="/orders" element={<OrdersPage/>} />
               <Route path="/create-product" element={<CreateProductPage />} />
               <Route path="/admin/delete-products" element={<DeleteProductsPage />} />
+              <Route path="/admin/change-role" element={<ChangeUserRolePage />} />
           </Routes>
           <Footer />
       </BrowserRouter>
