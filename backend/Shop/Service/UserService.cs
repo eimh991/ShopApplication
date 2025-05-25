@@ -1,4 +1,5 @@
-﻿using Shop.Enum;
+﻿using Shop.DTO;
+using Shop.Enum;
 using Shop.Interfaces;
 using Shop.Model;
 using Shop.Repositories;
@@ -55,9 +56,17 @@ namespace Shop.Service
             await _userRepository.DeleteAsync(id, cancellationToken);
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync(string search , CancellationToken cancellationToken)
+        public async Task<IEnumerable<UserResponseDTO>> GetAllAsync(string search , CancellationToken cancellationToken)
         {
-            return await _userRepository.GetAllAsync(search, cancellationToken);
+            var users  =  await _userRepository.GetAllAsync(search, cancellationToken);
+
+            return users.Select(u => new UserResponseDTO
+            {
+                UserId = u.UserId,
+                UserName = u.UserName,
+                Email = u.Email,
+                Role = u.UserRole.ToString()
+            }).ToList();
         }
 
         public async Task<User> GetByEmaiAsync(string email , CancellationToken cancellationToken)

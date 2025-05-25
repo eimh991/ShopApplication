@@ -95,6 +95,16 @@ namespace Shop.Controllers
             }
             return Ok(user);
         }
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<UserResponseDTO>>> GetAllUsers(CancellationToken cancellationToken, string? search = "")
+        {
+            var users = await _userService.GetAllAsync(search, cancellationToken);
+            if(users == null)
+            {
+                throw new Exception("Нету не одного пользователя на сайте");
+            }
+            return Ok(users);
+        }
 
         [HttpGet("checkmoney")]
         public async Task<ActionResult<bool>> CheckMoneyInAccount(int userId, decimal cartCoast, CancellationToken cancellationToken)
@@ -109,6 +119,20 @@ namespace Shop.Controllers
                 return true;
             }
             return false;
+        }
+
+        [HttpPut("changerole")]
+        public async Task<IActionResult> ChangeUserRoleAsync([FromBody] ChangeUserRoleDTO dto, CancellationToken cancellationToken)
+        {
+            Console.WriteLine($"UserId: {dto.UserId}, NewRole: '{dto.NewRole}'");
+            if (string.IsNullOrWhiteSpace(dto.NewRole) || 
+                    !System.Enum.TryParse<UserRole>(dto.NewRole, true, out var role))
+            {
+                return BadRequest(new { message = "Некорректная роль" });
+            }
+
+            await _userService.ChangeStatusAsync(dto.UserId, dto.NewRole, cancellationToken);
+            return Ok(new { message = "Роль успешно изменена" });
         }
 
         private string GetIdFromClaims(JwtSecurityToken jwt)
