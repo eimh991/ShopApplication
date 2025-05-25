@@ -12,7 +12,7 @@ const DeleteProductsPage = () => {
     const checkAccessAndFetchProducts = async () => {
       try {
         const authRes = await axios.get('https://localhost:5260/api/User/getme');
-        if (!['Admin', 'Manager'].includes(authRes.data.role)) {
+        if (!['Admin'].includes(authRes.data.role)) {
           return navigate('/');
         }
         setUserRole(authRes.data.role);

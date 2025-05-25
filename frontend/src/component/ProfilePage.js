@@ -69,6 +69,10 @@ const ProfilePage = () => {
             <button onClick={handleCreateProduct} className="btn btn-success me-2">
               ➕ Создать товар
             </button>
+          </>
+          )}
+          {(userRole === 'Admin') && (
+          <>
             <Link to="/admin/delete-products" className="btn btn-danger">
               🗑️ Удалить товар
             </Link>
