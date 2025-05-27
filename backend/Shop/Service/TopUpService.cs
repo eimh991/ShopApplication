@@ -51,9 +51,14 @@ namespace Shop.Service
             return true;
         }
 
-        public async Task<string> CreateTopUpCodeAsync(int amountValue, CancellationToken cancellationToken)
+        public async Task<string> CreateTopUpCodeAsync(decimal amountValue, CancellationToken cancellationToken)
         {
-            if (!System.Enum.IsDefined(typeof(TopUpAmount), amountValue))
+            if (amountValue % 1 != 0)
+                throw new ArgumentException("Сумма должна быть целым числом");
+
+            int intAmount = (int)amountValue;
+
+            if (!System.Enum.IsDefined(typeof(TopUpAmount), intAmount))
                 throw new ArgumentException($"Недопустимая сумма пополнения: {amountValue}");
 
             var amount = (TopUpAmount)amountValue;

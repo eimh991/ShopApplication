@@ -41,6 +41,18 @@ const ProfilePage = () => {
     return <div className="text-center mt-5 text-danger">Не удалось загрузить профиль пользователя.</div>;
   }
 
+  const handleTopUpClick = () => {
+    navigate('/top-up');
+  };
+
+  if (loading) {
+    return <div className="text-center mt-5">Загрузка...</div>;
+  }
+
+  if (!user) {
+    return <div className="text-center mt-5 text-danger">Не удалось загрузить профиль пользователя.</div>;
+  }
+
   return (
     <div className="container mt-4">
       <h2 className="mb-4">👤 Личный кабинет</h2>
@@ -59,11 +71,14 @@ const ProfilePage = () => {
         </div>
         <div className="d-flex justify-content-between mt-4">
           <Link to="/cart" className="btn btn-outline-primary">
-            Моя корзина
+            🛒 Моя корзина
           </Link>
           <Link to="/orders" className="btn btn-outline-secondary">
-            Мои заказы
+            📦 Мои заказы
           </Link>
+          <button onClick={handleTopUpClick} className="btn btn-outline-success">
+            💰 Пополнить баланс
+          </button>
           {(userRole === 'Admin' || userRole === 'Manager') && (
           <>
             <button onClick={handleCreateProduct} className="btn btn-success me-2">

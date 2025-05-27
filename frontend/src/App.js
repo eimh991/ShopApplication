@@ -14,6 +14,7 @@ import ProfilePage from './component/ProfilePage';
 import CreateProductPage from './component/CreateProductPage';
 import DeleteProductsPage from './component/DeleteProductsPage';
 import ChangeUserRolePage from './component/ChangeUserRolePage';
+import TopUpPage from './component/TopUpPage';
 
 const App = () => {
   return (
@@ -34,6 +35,7 @@ const App = () => {
               <Route path="/create-product" element={<CreateProductPage />} />
               <Route path="/admin/delete-products" element={<DeleteProductsPage />} />
               <Route path="/admin/change-role" element={<ChangeUserRolePage />} />
+              <Route path="/top-up" element={<TopUpPage />} />
           </Routes>
           <Footer />
       </BrowserRouter>
