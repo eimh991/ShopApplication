@@ -69,7 +69,7 @@ const ProfilePage = () => {
           <FaCoins className="me-2 text-warning" />
           <strong>Баланс:</strong> {user.balance} руб.
         </div>
-        <div className="d-flex justify-content-between mt-4">
+        <div className="d-flex flex-wrap justify-content-between gap-2 mt-4">
           <Link to="/cart" className="btn btn-outline-primary">
             🛒 Моя корзина
           </Link>
@@ -79,26 +79,24 @@ const ProfilePage = () => {
           <button onClick={handleTopUpClick} className="btn btn-outline-success">
             💰 Пополнить баланс
           </button>
-          {(userRole === 'Admin' || userRole === 'Manager') && (
-          <>
-            <button onClick={handleCreateProduct} className="btn btn-success me-2">
+        </div>
+        {(userRole === 'Admin' || userRole === 'Manager') && (
+          <div className="d-flex flex-wrap justify-content-start gap-2 mt-3">
+            <button onClick={handleCreateProduct} className="btn btn-success">
               ➕ Создать товар
             </button>
-          </>
-          )}
-          {(userRole === 'Admin') && (
-          <>
-            <Link to="/admin/delete-products" className="btn btn-danger">
-              🗑️ Удалить товар
-            </Link>
-          </>
-          )}
-          {userRole === 'Admin' && (
-            <Link to="/admin/change-role" className="btn btn-warning">
-              🛠️ Сменить роль пользователя
-            </Link>
-          )}
-        </div>
+            {userRole === 'Admin' && (
+              <>
+                <Link to="/admin/delete-products" className="btn btn-danger">
+                  🗑️ Удалить товар
+                </Link>
+                <Link to="/admin/change-role" className="btn btn-warning">
+                  🛠️ Сменить роль пользователя
+                </Link>
+              </>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

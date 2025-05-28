@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Shop.DTO;
 using Shop.Interfaces;
 
 namespace Shop.Controllers
@@ -26,10 +27,10 @@ namespace Shop.Controllers
             return Ok(newCode);
         }
 
-        [HttpPost("newCode")]
-        public async Task<ActionResult<bool>> ApplyTopUpCodeAsync([FromBody] string code, int userId, CancellationToken cancellationToken)
+        [HttpPost("applyCode")]
+        public async Task<ActionResult<bool>> ApplyTopUpCodeAsync([FromBody]TopUpCodeDTO dto, CancellationToken cancellationToken)
         {
-            var applycode = await _topUpService.ApplyTopUpCodeAsync(code, userId, cancellationToken);
+            var applycode = await _topUpService.ApplyTopUpCodeAsync(dto.Code, dto.UserId, cancellationToken);
 
             if (!applycode)
             {

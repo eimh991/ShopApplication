@@ -13,7 +13,7 @@ namespace Shop.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
-        public DbSet<BalanceHistory> BalanceHistorys { get; set; }
+        public DbSet<BalanceHistory> BalanceHistory { get; set; }
         public DbSet<TopUpCode> TopUpCodes { get; set; }
 
 

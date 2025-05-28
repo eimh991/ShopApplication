@@ -49,6 +49,7 @@ namespace Shop.Repositories
                 IsUsed = false
             };
             await _context.TopUpCodes.AddAsync(newCode, cancellationToken);
+            await _context.SaveChangesAsync();
             return newCode;
         }
 

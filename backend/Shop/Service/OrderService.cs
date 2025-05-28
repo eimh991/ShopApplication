@@ -15,15 +15,17 @@ namespace Shop.Service
         private readonly ICartItemCleaner _cartCleaner;
         private readonly IUserBalanceUpdater _userBalanceUpdater;
         private readonly IDatabase _redisDb;
+        private readonly IRepositoryWithUser<BalanceHistory> _balanceHistoryRepository;
 
         public OrderService(IRepositoryWithUser<Model.Order> orderRepository, ICartItemCleaner cartCleaner,
-            IRepository<User> userRepository, IUserBalanceUpdater userBalanceUpdater,IDatabase redisDb)
+            IRepository<User> userRepository, IUserBalanceUpdater userBalanceUpdater,IDatabase redisDb, IRepositoryWithUser<BalanceHistory> balanceHistoryRepository)
         {
             _orderRepository = orderRepository;
             _cartCleaner = cartCleaner;
             _userBalanceUpdater= userBalanceUpdater;    
             _userRepository = userRepository;
             _redisDb = redisDb;
+            _balanceHistoryRepository = balanceHistoryRepository;
         }
 
         public async Task CreateOrderAsync(int userId,IEnumerable<CartItem> items, CancellationToken cancellationToken)
@@ -49,6 +51,15 @@ namespace Shop.Service
             user.Balance -= order.TotalAmount;
             
             await _userBalanceUpdater.UpdateBalanceAsync(user, cancellationToken);
+
+            var history = new BalanceHistory
+            {
+                Amount = -order.TotalAmount,
+                Description = $"Вы оформили заказа {order.OrderId}  и у вас с баланса списали {order.TotalAmount}",
+                TransactionDate = DateTime.UtcNow,
+                UserId = userId
+            };
+            await _balanceHistoryRepository.AddAsync(userId, history, cancellationToken);
 
             await _cartCleaner.DeleteAllCartItemsAsync(userId, cancellationToken);
 

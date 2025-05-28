@@ -3,6 +3,7 @@ using Shop.Interfaces;
 using Shop.Model;
 using Shop.Service;
 using StackExchange.Redis;
+using System.ComponentModel;
 using System.Text.Json;
 using Xunit;
 
@@ -16,7 +17,9 @@ namespace Shop.Tests.Service
         private readonly Mock<IRepository<User>> _mockUserRepo;
         private readonly Mock<IUserBalanceUpdater> _mockUserBalanceUpdater;
         private readonly Mock<StackExchange.Redis.IDatabase> _mockRedisDb;
+        private readonly Mock<IRepositoryWithUser<BalanceHistory>> _mockBalanceHistoryRepo;
         private readonly OrderService _orderService;
+        
 
         public OrderServiceTests()
         {
@@ -24,6 +27,7 @@ namespace Shop.Tests.Service
             _mockUserRepo = new Mock<IRepository<User>>();
             _mockCartItemCleanerRepo = new Mock<ICartItemCleaner>();
             _mockUserBalanceUpdater = new Mock<IUserBalanceUpdater>();
+            _mockBalanceHistoryRepo = new Mock<IRepositoryWithUser<BalanceHistory>>();
             _mockRedisDb = new Mock<IDatabase>();
 
             _orderService = new OrderService(
@@ -31,7 +35,8 @@ namespace Shop.Tests.Service
                 _mockCartItemCleanerRepo.Object,
                 _mockUserRepo.Object,
                 _mockUserBalanceUpdater.Object,
-                _mockRedisDb.Object
+                _mockRedisDb.Object,
+                _mockBalanceHistoryRepo.Object
              );
             
 
@@ -86,6 +91,7 @@ namespace Shop.Tests.Service
             _mockOrderRepo.Setup(r => r.AddAsync(userId, It.IsAny<Model.Order>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
             _mockCartItemCleanerRepo.Setup(r => r.DeleteAllCartItemsAsync(userId, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
             _mockUserBalanceUpdater.Setup(u=>u.UpdateBalanceAsync(It.IsAny<User>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+            _mockBalanceHistoryRepo.Setup(b => b.AddAsync(userId, It.IsAny<BalanceHistory>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
             _mockRedisDb.Setup(db => db.KeyDeleteAsync(
                 It.Is<RedisKey>(key => key.ToString() == $"order_user_{userId}"), CommandFlags.None))
                 .ReturnsAsync(true); 
@@ -98,6 +104,7 @@ namespace Shop.Tests.Service
             _mockOrderRepo.Verify(r => r.AddAsync(userId, It.IsAny<Model.Order>(), It.IsAny<CancellationToken>()), Times.Once());
             _mockCartItemCleanerRepo.Verify(r => r.DeleteAllCartItemsAsync(userId, It.IsAny<CancellationToken>()), Times.Once());
             _mockUserBalanceUpdater.Verify(u => u.UpdateBalanceAsync(It.Is<User>(u => u.UserId == userId), It.IsAny<CancellationToken>()), Times.Once());
+            _mockBalanceHistoryRepo.Verify(bh=>bh.AddAsync(userId, It.IsAny<BalanceHistory>(), It.IsAny<CancellationToken>()), Times.Once());
             _mockRedisDb.Verify(db => db.KeyDeleteAsync(It.IsAny<RedisKey>(), CommandFlags.None), Times.Once);
         }
 

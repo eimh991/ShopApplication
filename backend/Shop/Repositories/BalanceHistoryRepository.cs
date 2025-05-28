@@ -44,7 +44,7 @@ namespace Shop.Repositories
 
         public async Task DeleteAsync(int entityId, CancellationToken cancellationToken)
         {
-            await _context.BalanceHistorys
+            await _context.BalanceHistory
                 .Where(b=>b.BalanceHistoryId == entityId)
                 .ExecuteDeleteAsync();
         }
