@@ -15,6 +15,9 @@ import CreateProductPage from './component/CreateProductPage';
 import DeleteProductsPage from './component/DeleteProductsPage';
 import ChangeUserRolePage from './component/ChangeUserRolePage';
 import TopUpPage from './component/TopUpPage';
+import ChangePricePage from './component/ChangePricePage';
+import EditProductPage from './component/EditProductsPage';
+import EditProductsListPage from './component/EditProductsListPage';
 
 const App = () => {
   return (
@@ -36,6 +39,9 @@ const App = () => {
               <Route path="/admin/delete-products" element={<DeleteProductsPage />} />
               <Route path="/admin/change-role" element={<ChangeUserRolePage />} />
               <Route path="/top-up" element={<TopUpPage />} />
+              <Route path="/admin/edit-products" element={<EditProductsListPage />} />
+              <Route path="/admin/edit-products/:id" element={<EditProductPage />} />
+              <Route path="/admin/change-price/:id" element={<ChangePricePage />} />
           </Routes>
           <Footer />
       </BrowserRouter>

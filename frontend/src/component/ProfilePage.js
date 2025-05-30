@@ -93,6 +93,9 @@ const ProfilePage = () => {
                 <Link to="/admin/change-role" className="btn btn-warning">
                   🛠️ Сменить роль пользователя
                 </Link>
+                <Link to="/admin/edit-products" className="btn btn-info">
+                ✏️ Редактировать товар
+                </Link>
               </>
             )}
           </div>
