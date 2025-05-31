@@ -67,9 +67,9 @@ namespace Shop.Controllers
         }
 
         [HttpPut("price")]
-        public async Task<IActionResult> ChangePriceProduct([FromForm]ProductRequestDTO productDTO, CancellationToken cancellationToken)
+        public async Task<IActionResult> ChangePriceProduct([FromBody] ProductPriceChangeDTO productDTO, CancellationToken cancellationToken)
         {
-            await ((ProductService)_productService).ChangePriceAsync(productDTO, cancellationToken);
+            await _productService.ChangePriceAsync(productDTO, cancellationToken);
 
             return Ok();
         }

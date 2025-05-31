@@ -76,16 +76,20 @@ namespace Shop.Service
             await _productRepository.UpdateAsync(product, cancellationToken);
         }
 
-        public async Task ChangePriceAsync(ProductRequestDTO entity, CancellationToken cancellationToken)
+        public async Task ChangePriceAsync(ProductPriceChangeDTO entity, CancellationToken cancellationToken)
         {
-            if(entity.Price > 0m)
+            if(entity.NewPrice > 0m)
             {
                 Product product = new Product
                 {
                     ProductId = entity.ProductId,
-                    Price = entity.Price,
+                    Price = entity.NewPrice,
                 };
-                 await _productExtendedRepository.ChangePriceAsync(product, cancellationToken);
+
+                if (product == null)
+                    throw new Exception("Продукт не найден");
+
+                await _productExtendedRepository.ChangePriceAsync(product, cancellationToken);
             }
             
         }

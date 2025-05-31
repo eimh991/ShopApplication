@@ -12,6 +12,9 @@ namespace Shop.Interfaces
         Task<IEnumerable<ProductResponceDTO>> GetAllAsync(string search, int paginateSize, 
                             int page, string sortOrder, string categoryName , CancellationToken cancellationToken);
         Task DeleteAsync(int id, CancellationToken cancellationToken);
-        
+
+        Task ChangePriceAsync(ProductPriceChangeDTO entity, CancellationToken cancellationToken);
+
+
     }
 }

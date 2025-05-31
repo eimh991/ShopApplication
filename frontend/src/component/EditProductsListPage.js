@@ -50,10 +50,10 @@ function EditProductsListPage() {
             <div className="card-body">
               <h5 className="card-title">{product.title}</h5>
               <p className="card-text">{product.description}</p>
-              <Link to={`/admin/edit-products/${product.id}`} className="btn btn-primary m-1">
+              <Link to={`/admin/edit-products/${product.productId}`} className="btn btn-primary m-1">
                 Изменить описание
               </Link>
-              <Link to={`/admin/change-price/${product.id}`} className="btn btn-secondary m-1">
+              <Link to={`/admin/change-price/${product.productId}`} className="btn btn-secondary m-1">
                 Изменить цену
               </Link>
             </div>

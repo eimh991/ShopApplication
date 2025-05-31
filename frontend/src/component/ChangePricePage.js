@@ -6,6 +6,9 @@ const ChangePricePage = () => {
   const { id } = useParams(); // получаем id из URL
   const navigate = useNavigate();
 
+  console.log('id from useParams:', id);
+  console.log('Number(id):', Number(id));
+
   const [price, setPrice] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -36,26 +39,32 @@ const ChangePricePage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!price) {
-      alert('Цена не может быть пустой');
+    if (!price || price <= 0) {
+      alert('Цена должна быть больше 0');
       return;
     }
 
-    const formData = new FormData();
-    formData.append('productId', id);
-    formData.append('price', price);
-
     try {
-      await axios.put('https://localhost:5260/api/Product/price', formData, {
-        withCredentials: true,
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      await axios.put(
+        'https://localhost:5260/api/Product/price',
+        {
+          productId: Number(id),
+          newPrice: parseFloat(price),
+        },
+        {
+          withCredentials: true,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
       alert('Цена успешно обновлена');
-      navigate('/admin/products');
+      navigate(`/product/${id}`);  
     } catch (err) {
+      console.log({ productId: Number(id), newPrice: parseFloat(price) });
       alert('Ошибка при обновлении цены');
+      console.error(err);
     }
   };
+  
 
   if (loading) return <p>Загрузка...</p>;
   if (error) return <p>{error}</p>;
