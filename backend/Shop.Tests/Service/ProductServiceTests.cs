@@ -181,7 +181,7 @@ namespace Shop.Tests.Service
         public async Task ChangePriceAsync_ShouldCallRepository_WhenPriceIsPositive()
         {
             //Arrange
-            var dto = new ProductRequestDTO { ProductId = 1, Price = 200 };
+            var dto = new ProductPriceChangeDTO { ProductId = 1, NewPrice = 200 };
 
             //Act
             await _productService.ChangePriceAsync(dto, CancellationToken.None);
