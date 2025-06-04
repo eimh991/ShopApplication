@@ -55,11 +55,11 @@ namespace Shop.Repositories
         
         public async Task<Category?> FindByCategoryTitleAsync(string title, CancellationToken cancellationToken)
         {
-            string normalizedTitle = title.ToLower();
+            //string normalizedTitle = title.ToLower();
 
             return await _context.Categories
                      .FirstOrDefaultAsync(c =>
-                     c.CategoryName.ToLower() == normalizedTitle);
+                     c.CategoryName == title);
         }
     }
 }
