@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import '../App.css'; 
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -10,7 +11,6 @@ const ProductDetails = () => {
   const [newImage, setNewImage] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  //const [cartItems, setCartItems] = useState([]);
   const [inCart, setInCart] = useState(false);
   const [cartItemQuantity, setCartItemQuantity] = useState(0);
   const [cartItemId, setCartItemId] = useState(null);
@@ -37,21 +37,16 @@ const ProductDetails = () => {
 
 
   useEffect(() => {
-    // Получение корзины пользователя
     if (userId) {
       axios.get('https://localhost:5260/api/CartItem', { 
         params: { userId }, 
         withCredentials: true 
       })
         .then((response) => {
-          //console.log('Cart Items:', response.data);
-          //setCartItems(response.data);
           const cartItem = response.data.find(item => item.productId === parseInt(id));
           if (cartItem) {
             setInCart(true);
-            console.log('CartItem:', cartItem); 
             setCartItemQuantity(cartItem.quantity);
-            console.log(cartItem.cartItem);
             setCartItemId(cartItem.cartItemId);
           }
         })
@@ -106,7 +101,6 @@ const ProductDetails = () => {
       const response  = await axios.post('https://localhost:5260/api/CartItem', cartItem, { withCredentials: true });
       const newCartItem = response.data;
       console.log("Добавленный товар в корзину:", newCartItem);
-      //alert('Товар успешно добавлен в корзину!');
       setInCart(true);
       setCartItemQuantity(quantity);
       setCartItemId(newCartItem );
@@ -139,7 +133,7 @@ const ProductDetails = () => {
         withCredentials: true,
       });
   
-      setCartItemQuantity(newQuantity); // Обновляем количество в корзине
+      setCartItemQuantity(newQuantity); 
     } catch (error) {
       console.error('Ошибка при увеличении количества:', error);
       alert('Не удалось обновить количество товара в корзине.');
@@ -166,7 +160,7 @@ const ProductDetails = () => {
         withCredentials: true,
       });
   
-      setCartItemQuantity(newQuantity); // Обновляем количество в корзине
+      setCartItemQuantity(newQuantity); 
     } catch (error) {
       console.error('Ошибка при увеличении количества:', error);
       alert('Не удалось обновить количество товара в корзине.');

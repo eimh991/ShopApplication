@@ -73,7 +73,7 @@ const ChangeUserRolePage = () => {
                   onChange={(e) => handleSelectChange(user.userId, e.target.value)}
                   className="form-select"
                 >
-                    <option value="">Выберите роль</option>
+                    <option disabled>Выберите роль</option>
                     <option value="User">User</option>
                     <option value="Manager">Manager</option>
                     <option value="Admin">Admin</option>

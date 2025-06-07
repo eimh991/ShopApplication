@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ProductCard from './ProductCard';
+import '../App.css';
 
 
 const MainPage = () => {
@@ -14,9 +15,9 @@ const MainPage = () => {
 
 
   return (
-    <div>
-      <h1>Последние товары</h1>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
+    <div className="container">
+      <h1 className="title">Последние товары</h1>
+      <div className="productsGrid">
         {products.map((product) => (
           <ProductCard key={product.productId} product={product} />
         ))}

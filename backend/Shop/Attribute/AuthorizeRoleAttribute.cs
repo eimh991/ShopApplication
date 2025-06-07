@@ -11,11 +11,11 @@ namespace Shop.Attribute
 {
     public class AuthorizeRoleAttribute : AuthorizeAttribute, IAuthorizationFilter
     {
-        private readonly UserRole _role;
+        private readonly UserRole[] _roles;
 
-        public AuthorizeRoleAttribute(UserRole role)
+        public AuthorizeRoleAttribute(params UserRole[] roles)
         {
-            _role = role;
+            _roles = roles;
         }
 
         public void OnAuthorization(AuthorizationFilterContext context)
@@ -32,10 +32,10 @@ namespace Shop.Attribute
             var jwtToken = handler.ReadJwtToken(token);
 
             // Извлекаем значение из claim с типом Sid
-            var roleClaim = jwtToken?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            var roleClaim = jwtToken?.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
 
 
-            if (UserRole.TryParse<UserRole>(roleClaim, out var userRole) && userRole == _role)
+            if (roleClaim != null && UserRole.TryParse<UserRole>(roleClaim, out var userRole) && _roles.Contains(userRole))
             {
                 return;
             }

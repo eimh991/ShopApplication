@@ -96,7 +96,9 @@ namespace Shop.Repositories
 
             if (!string.IsNullOrWhiteSpace(search))
             {
-                query = query.Where(p => p.Name.ToLower().Contains(search.ToLower()));
+                //query = query.Where(p => p.Name.ToLower().Contains(search.ToLower()));
+                query = query.Where(p =>
+                    EF.Functions.ILike(p.Name, $"%{search}%"));
             }
 
             if (sortOrder == "desc")

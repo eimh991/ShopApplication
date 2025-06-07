@@ -29,7 +29,8 @@ namespace Shop.Service
         {
             if (!string.IsNullOrEmpty(status)
                 && status.ToLower() == UserRole.Manager.ToString().ToLower()
-                || status.ToLower() == UserRole.Admin.ToString().ToLower())
+                || status.ToLower() == UserRole.Admin.ToString().ToLower()
+                || status.ToLower() == UserRole.User.ToString().ToLower())
             {
 
                 await _userAdditionalRepository.ChangeStatusAsync(userId,status, cancellationToken);

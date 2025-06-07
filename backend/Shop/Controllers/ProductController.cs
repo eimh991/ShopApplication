@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shop.Attribute;
 using Shop.DTO;
 using Shop.Enum;
@@ -18,7 +19,10 @@ namespace Shop.Controllers
         {
             _productService = productService;
         }
+        
         [HttpPost]
+        [Authorize]
+        [AuthorizeRole(UserRole.Admin, UserRole.Manager)]
         public async Task<IActionResult> CreateProductAsync([FromForm]ProductRequestDTO productDTO, CancellationToken cancellationToken)
         {
             await _productService.CreateAsync(productDTO, cancellationToken);
@@ -50,6 +54,8 @@ namespace Shop.Controllers
             return Ok(products);
         }
 
+        [Authorize]
+        [AuthorizeRole(UserRole.Admin)]
         [HttpDelete]
         public async Task<IActionResult> DeleteProductAsync(int productId, CancellationToken cancellationToken)
         {
@@ -87,6 +93,7 @@ namespace Shop.Controllers
 
         
         [HttpPut("imagePath")]
+        [Authorize]
         [AuthorizeRole(UserRole.Admin)]
         public async Task<IActionResult> ChangeImagePathProduct([FromForm] ProductRequestChangeImageDTO productDTO, CancellationToken cancellationToken)
         {
