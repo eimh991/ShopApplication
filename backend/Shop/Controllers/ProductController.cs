@@ -44,7 +44,7 @@ namespace Shop.Controllers
 
         [HttpGet]
         public async Task<ActionResult<List<ProductResponceDTO>>> GetProductsAsync(string search = "", 
-            int paginateSize = 9, int page = 1, string sortOrder = "", string categoryName = "", CancellationToken cancellationToken = default)
+            int paginateSize = 6, int page = 1, string sortOrder = "", string categoryName = "", CancellationToken cancellationToken = default)
         {
             var products = await _productService.GetAllAsync(search, paginateSize,page,sortOrder, categoryName,cancellationToken);
             if (!products.Any())
