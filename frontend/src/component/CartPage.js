@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import '../App.css'; 
 
 const CartPage = () => {
   const [cartProducts, setCartProducts] = useState([]);
@@ -19,15 +20,12 @@ const CartPage = () => {
       try {
         const userResponse = await axios.get("https://localhost:5260/api/User/getme");
         const user = userResponse.data;
-        //console.log(user.id);
 
         if (!user.id) {
-          navigate("/auth"); // Перенаправление на главную, если пользователь не авторизован
+          navigate("/auth");
           return;
         }
         
-
-        // Запрос на получение товаров корзины
         const cartResponse = await axios.get(
           `https://localhost:5260/api/CartItem/CartProducts?userId=${user.id}`
         );
@@ -88,7 +86,7 @@ const CartPage = () => {
 
 
   
-
+/*
   return (
     <div className="container">
       <h1 className="text-center my-4">Корзина</h1>
@@ -159,6 +157,118 @@ const CartPage = () => {
               <button className="btn btn-primary" onClick={handlePurchase} disabled={loading}>
                 {loading? "Обработка ..." : "Купить"}
               </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default CartPage;
+*/
+return (
+    <div className="cart-container">
+      <div className="cart-header">
+        <h1>Ваша корзина</h1>
+        {cartProducts.length > 0 && (
+          <span className="cart-count">{cartProducts.length} товара</span>
+        )}
+      </div>
+
+      {errorMessage && (
+        <div className="error-message">
+          <svg className="error-icon" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+          </svg>
+          <p>{errorMessage}</p>
+          <div className="payment-links">
+            <a href="https://www.tinkoff.ru/" target="_blank" rel="noopener noreferrer">
+              <svg className="payment-icon" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+              </svg>
+              Тинькофф
+            </a>
+            <a href="https://qiwi.com/" target="_blank" rel="noopener noreferrer">
+              <svg className="payment-icon" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+              </svg>
+              QIWI
+            </a>
+          </div>
+        </div>
+      )}
+
+      {cartProducts.length === 0 ? (
+        <div className="empty-cart">
+          <svg className="cart-icon" viewBox="0 0 24 24">
+            <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+          </svg>
+          <h3>Ваша корзина пуста</h3>
+          <p>Добавьте товары, чтобы увидеть их здесь</p>
+          <button 
+            className="continue-shopping-btn"
+            onClick={() => navigate("/")}
+          >
+            Продолжить покупки
+          </button>
+        </div>
+      ) : (
+        <>
+          <div className="cart-items">
+            {cartProducts.map((product) => (
+              <div key={product.productId} className="cart-item">
+                <div 
+                  className="product-image"
+                  onClick={() => navigate(`/product/${product.productId}`)}
+                >
+                  <img
+                    src={`https://localhost:5260/images/${product.imagePath}`}
+                    alt={product.name}
+                  />
+                </div>
+                <div className="product-info">
+                  <h3 
+                    className="product-name"
+                    onClick={() => navigate(`/product/${product.productId}`)}
+                  >
+                    {product.productName}
+                  </h3>
+                  <p className="product-description">{product.description}</p>
+                  <div className="product-meta">
+                    <div className="quantity-badge">
+                      {product.quantity} шт.
+                    </div>
+                    <div className="price-info">
+                      <span className="unit-price">{product.price} ₽/шт.</span>
+                      <span className="total-price">{product.price * product.quantity} ₽</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="cart-summary">
+            <div className="summary-content">
+              <div className="total-price">
+                <span>Итого:</span>
+                <span className="amount">{getTotalPrice()} ₽</span>
+              </div>
+              <button 
+                className="checkout-btn"
+                onClick={handlePurchase} 
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <svg className="spinner" viewBox="0 0 50 50">
+                      <circle cx="25" cy="25" r="20" fill="none" strokeWidth="5"></circle>
+                    </svg>
+                    Оформление...
+                  </>
+                ) : "Оформить заказ"}
+              </button>
+            </div>
           </div>
         </>
       )}

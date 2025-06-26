@@ -5,7 +5,7 @@
         public int CartItemId { get; set; }
         public int Quantity { get; set; }
 
-        public bool IsVisible { get; set; } = true; // Видимость товара в корзине
+        public bool IsVisible { get; set; } = true; 
 
         // Внешние ключи и связи
         public int CartId { get; set; }
